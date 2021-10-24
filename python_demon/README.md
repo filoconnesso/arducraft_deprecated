@@ -1,4 +1,4 @@
-###SETUP
+### SETUP
 
 Copy arducraft.py to the following folders according to your operating system:
 
