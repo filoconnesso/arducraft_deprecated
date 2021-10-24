@@ -13,7 +13,6 @@ Launch the demon
 ```sh
 py ./arducraft.py
 ```
-
-- Select the device COM
 - Upload the sample sketch
+- Select the device COM
 - Enjoy!
