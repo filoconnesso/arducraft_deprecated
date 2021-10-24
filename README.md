@@ -1,4 +1,5 @@
 # arducraft
-Tool and Library to connect your Microcontroller to Minecraft.
+
+Tool and library to control your microcontroller with Minecraft.
 
 Project for Java Edition
