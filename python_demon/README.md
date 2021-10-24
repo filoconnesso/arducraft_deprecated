@@ -2,9 +2,9 @@
 
 Copy arducraft.py to the following folders according to your operating system:
 
-Windows - %APPDATA%\.minecraft\logs
-MacOS - ~/Library/Application Support/minecraft/logs
-Linux - ~/.minecraft/logs
+- Windows %APPDATA%\.minecraft\logs
+- MacOS ~/Library/Application Support/minecraft/logs
+- Linux ~/.minecraft/logs
 
 Launch arducraft.py from PowerShell or terminal :
 
