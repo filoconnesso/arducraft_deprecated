@@ -1,16 +1,18 @@
 ### SETUP
 
-Copy arducraft.py to the following folders according to your operating system:
+Install #pyserial and #keyboard modules
 
-- Windows %APPDATA%\.minecraft\logs
-- MacOS ~/Library/Application Support/minecraft/logs
-- Linux ~/.minecraft/logs
+```sh
+pip install pyserial
+```
+```sh
+pip install keyboard
+```
+Launch the demon
 
-Launch arducraft.py from PowerShell or terminal :
+```sh
+py ./arducraft.py
+```
 
- ```sh
-   py ./arducraft.py
- ```
-Select port and enjoy!
-
-Use the arduino example to interpret commands from Minecraft chat and commandblocks.
+- Select the device com
+- Enjoy!
