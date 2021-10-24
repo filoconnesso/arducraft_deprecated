@@ -14,5 +14,6 @@ Launch the demon
 py ./arducraft.py
 ```
 
-- Select the device com
+- Select the device COM
+- Upload the sample sketch
 - Enjoy!
