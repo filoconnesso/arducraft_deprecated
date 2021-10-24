@@ -1,6 +1,6 @@
 ### SETUP
 
-Install #pyserial and #keyboard modules
+Install # pyserial and # keyboard modules
 
 ```sh
 pip install pyserial
