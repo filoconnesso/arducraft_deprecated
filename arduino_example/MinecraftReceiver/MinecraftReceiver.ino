@@ -31,18 +31,18 @@ String Arducraft::readMessage() {
   return s->readStringUntil('\n');
 }
 
-Arducraft minecraft;
+Arducraft minecraftLog;
 
 void setup() {
   Serial.begin(115200);
-  minecraft.begin(&Serial);
+  minecraftLog.begin(&Serial);
   pinMode(LED, OUTPUT);
 }
 
 void loop() {
 
-  bool cmdLedON = minecraft.readWord("ledon");
-  bool cmdLedOFF = minecraft.readWord("ledoff");
+  bool cmdLedON = minecraftLog.readWord("ledon");
+  bool cmdLedOFF = minecraftLog.readWord("ledoff");
 
   if (cmdLedON) {
     digitalWrite(LED, HIGH);
