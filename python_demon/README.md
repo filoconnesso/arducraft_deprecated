@@ -6,9 +6,15 @@ Install **pyserial** and **keyboard** modules
 pip install pyserial
 ```
 ```sh
-pip install keyboard
+pip install tabulate
 ```
-Launch the demon
+
+```sh
+
+pip install asyncio
+```
+
+Launch the daemon
 
 ```sh
 py ./arducraft.py

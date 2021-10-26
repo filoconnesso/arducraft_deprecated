@@ -1,6 +1,6 @@
 //Minecraft Receiver Example
 
-#define LED 6
+#define LED 8
 
 class Arducraft {
   private :
@@ -46,10 +46,12 @@ void loop() {
 
   if (cmdLedON) {
     digitalWrite(LED, HIGH);
+    Serial.println("ledon");
   }
 
   if (cmdLedOFF) {
     digitalWrite(LED, LOW);
+    Serial.println("ledoff");
   }
 
 }
