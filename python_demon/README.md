@@ -11,9 +11,6 @@ pip install pyserial
 set TABULATE_INSTALL=lib-only
 pip install tabulate
 ```
-```sh
-pip install asyncio
-```
 
 On MacOS : 
 
@@ -22,9 +19,6 @@ pip install pyserial
 ```
 ```sh
 pip install tabulate
-```
-```sh
-pip install asyncio
 ```
 
 Launch the daemon
