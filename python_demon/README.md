@@ -1,6 +1,6 @@
 ### SETUP
 
-Install **pyserial**, **tabulate** and **asyncio** modules
+Install **pyserial** and **tabulate** modules
 
 On Windows :
 
