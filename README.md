@@ -8,32 +8,31 @@ Project for Java Edition
 
 Install NodeJS for your OS : https://nodejs.org/it/
 
-Enter the folder contaning **arducraft.js** and type on terminal : 
+Enter the folder contaning **arducraft.js** and type on terminal
 
 ```bash
 npm install
 ```
-After installation start ArduCraft : 
+After installation start ArduCraft with 
 
 ```bash
 node arducraft.js
 ```
 
-Upload the example code on board.
+Upload the example code on your board.
 
-Open new Minecraft session.
+Open new Minecraft world and share it on lan or join into your server with offline mode enabled.
 
-Follow  the configuration instructions that are shown in the terminal :
+Follow the instructions that are shown in the terminal :
 
 * Select the serial port from list.
-* Set the domain (ip, server domain address or localhost).
-* Set the destination port.
-* Set the Minecraft version (server only, for local this is not required).
+* Set the domain (ip, domain or localhost).
+* Set the server port.
+* Set the Minecraft version (server only, for localhost this is not required).
 * Set the bot name.
 
 # Configuration for Minecraft 
 
-* Activate the command blocks
-* Activate the cheats
+* Activate command blocks and cheat codes in minecraft world configuration
 * Make your bot to operator with "/op botname"
-
+* In localhost mode you must use the LAN
