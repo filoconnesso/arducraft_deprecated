@@ -61,14 +61,23 @@ function Main() {
         port: parseInt(answers.port),
         username: answers.bot_name,
       });
-      console.log(answers.serial_port)
-      const device = new serialPort(answers.serial_port, { baudRate: 115200 });
 
+      const device = new serialPort(answers.serial_port, { baudRate: 115200 });
 
       bot.on("chat", (username, message) => {
         if (username === bot.username) return;
-        console.log(`${username} said "${message}"`);
         device.write(message + "\n");
+      });
+
+      device.on('open',function(){
+        device.on('data', function(data){
+          let datastring = data.toString();
+          if(datastring.indexOf("botmessage:") != -1) {
+             datastring = datastring.replace("botmessage:", "");
+             console.log(datastring);
+             bot.chat(datastring);
+          }
+        });
       });
     
       function lookAtPlayer() {
@@ -82,7 +91,7 @@ function Main() {
       }
     
       bot.on("physicTick", lookAtPlayer);
-    
+      fcadventures.mcpro.io
       // Log errors and kick reasons:
       bot.on("kicked", console.log);
       bot.on("error", console.log);
