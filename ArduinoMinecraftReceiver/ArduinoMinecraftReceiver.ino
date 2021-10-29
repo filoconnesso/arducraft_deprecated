@@ -22,7 +22,7 @@ void loop() {
       digitalWrite(ledPin, HIGH);
     }
 
-    if (readString.indexOf("ledoff") >= 0)å
+    if (readString.indexOf("ledoff") >= 0)s
     {
       digitalWrite(ledPin, LOW);
     }
