@@ -1,5 +1,7 @@
 const mineflayer = require("mineflayer");
 const serialPort = require("serialport");
+const Readline = require('@serialport/parser-readline')
+
 const inquirer = require("inquirer");
 
 let data = {};
@@ -67,6 +69,7 @@ function Main() {
     .prompt(questions)
 
     .then((answers) => {
+
       const bot = mineflayer.createBot({
         host: answers.hostname,
         port: parseInt(answers.port),
@@ -74,7 +77,11 @@ function Main() {
         version: answers.version
       });
 
-      const device = new serialPort(answers.serial_port, { baudRate: 115200 });
+      const device = new serialPort(answers.serial_port, { 
+        baudRate: 115200,
+      });
+
+      const parser = device.pipe(new Readline({ delimiter: '\n' }))
 
       bot.on("chat", (username, message) => {
         if (username === bot.username) return;
@@ -82,29 +89,24 @@ function Main() {
       });
 
       device.on("open", function () {
-        device.on("data", function (data) {
-          let datastring = data.toString();
-          if (datastring.indexOf("botmessage:") != -1) {
-            datastring = datastring.replace("botmessage:", "");
-            console.log(datastring);
-            bot.chat(datastring);
-          }
+        parser.on('data', (data) => {
+          let command = data;
+          command = command.replace(/(\r\n|\n|\r)/gm, "");
+          bot.chat(command);
         });
       });
 
       function lookAtPlayer() {
         const playerFilter = (entity) => entity.type === "player";
         const playerEntity = bot.nearestEntity(playerFilter);
-
         if (!playerEntity) return;
-
         const pos = playerEntity.position;
         bot.lookAt(pos);
       }
 
       bot.on("physicTick", lookAtPlayer);
-      // Log errors and kick reasons:
       bot.on("kicked", console.log);
       bot.on("error", console.log);
+
     });
 }
