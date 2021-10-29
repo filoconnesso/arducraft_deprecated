@@ -1,56 +1,32 @@
-//Minecraft Receiver Example
-
-#define LED 13
-
-class Arducraft {
-  private :
-    Stream* s;
-  public :
-    Arducraft() {}
-    void begin(Stream *newSerRef);
-    bool readWord(const char* w);
-    String readMessage();
-};
-
-void Arducraft::begin(Stream *newSerRef) {
-  s = newSerRef;
-}
-
-bool Arducraft::readWord(const char* w) {
-  bool result;
-  String msg = s->readStringUntil('\n');
-  if (msg.indexOf(w) != -1) {
-    result = true;
-  } else {
-    result = false;
-  }
-  return result;
-}
-
-String Arducraft::readMessage() {
-  return s->readStringUntil('\n');
-}
-
-Arducraft minecraftLog;
+int ledPin = 8;
+String readString;
 
 void setup() {
   Serial.begin(115200);
-  minecraftLog.begin(&Serial);
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
+  pinMode(ledPin, OUTPUT);
 }
 
 void loop() {
 
-  bool cmdLedON = minecraftLog.readWord("ledon");
-  bool cmdLedOFF = minecraftLog.readWord("ledoff");
-
-  if (cmdLedON) {
-    digitalWrite(LED, HIGH);
+  while (Serial.available()) {
+    delay(3);
+    char c = Serial.read();
+    readString += c;
   }
 
-  if (cmdLedOFF) {
-    digitalWrite(LED, LOW);
-  }
+  if (readString.length() > 0) {
+    Serial.println(readString);
 
+    if (readString.indexOf("ledon") >= 0)
+    {
+      digitalWrite(ledPin, HIGH);
+    }
+
+    if (readString.indexOf("ledoff") >= 0)å
+    {
+      digitalWrite(ledPin, LOW);
+    }
+
+    readString = "";
+  }
 }
