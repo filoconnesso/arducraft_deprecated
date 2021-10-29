@@ -49,6 +49,11 @@ serialPort.list()
     },
     {
       type: "input",
+      name: "version",
+      message: "Indicate the server version: ",
+    },
+    {
+      type: "input",
       name: "bot_name",
       message: "Indicate the bot name: ",
     },
@@ -66,6 +71,7 @@ function Main() {
         host: answers.hostname,
         port: parseInt(answers.port),
         username: answers.bot_name,
+        version: answers.version
       });
 
       const device = new serialPort(answers.serial_port, { baudRate: 115200 });
