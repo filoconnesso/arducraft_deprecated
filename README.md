@@ -36,3 +36,4 @@ Follow the instructions that are shown in the terminal :
 * Activate command blocks and cheat codes in minecraft world configuration
 * Make your bot to operator with "/op botname"
 * In localhost mode you must use the LAN
+* When you're using command blocks you must set a name to them with the anvil to make the command work (say xxx)
