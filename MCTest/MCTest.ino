@@ -1,60 +1,19 @@
 #include "Arducraft.h"
-#include "Tweakly.h"
 
-// Led output
 #define LED 13
 #define LED2 8
-
-// Buttons
-#define ThunderBtn 2
-Pad Tweak(ThunderBtn, INPUT);
-
-//Thunder Status
-bool old_btn_value;
-bool weather_status;
+#define POT A0
 
 Minecraft mc;
 
-// Encoder
-int encoderPin1 = 9;
-int encoderPin2 = 10;
-volatile int lastEncoded = 0;
-volatile int encoderValue = 0;
-long lastencoderValue = 0;
-int lastMSB = 0;
-int lastLSB = 0;
-
-
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   mc.deamonAttach(&Serial);
-
   pinMode(LED, OUTPUT);
   pinMode(LED2, OUTPUT);
-
-  pinMode(encoderPin1, INPUT_PULLUP);
-  pinMode(encoderPin2, INPUT_PULLUP);
-  attachInterrupt(0, onEncoderChange, CHANGE);
-  attachInterrupt(1, onEncoderChange, CHANGE);
 }
-
-
-
-void onEncoderChange() {
-  int MSB = digitalRead(encoderPin1);
-  int LSB = digitalRead(encoderPin2); 
-  int encoded = (MSB << 1) | LSB;
-  int sum  = (lastEncoded << 2) | encoded; 
-  if (sum == 0b1000) encoderValue ++;
-  if (sum == 0b0010) encoderValue --;
-  lastEncoded = encoded;
-}
-
-
-
 
 void loop() {
-  TweaklyRun();
 
   String cmd = mc.readMessage();
 
@@ -75,26 +34,10 @@ void loop() {
     digitalWrite(LED2, LOW);
   }
 
+  int value = analogRead(A0);
 
-  bool btn_value = digitalPushButton(ThunderBtn);
+  value = map(value, 0, 1023, 0, 23000);
 
-  if(old_btn_value != btn_value)
-  {
-
-    if(weather_status == 0)
-    {
-      mc.setWeather(1);
-      weather_status = 1;
-    }
-    else {
-      mc.setWeather(2);
-      weather_status = 0;      
-    }
-    old_btn_value = btn_value;
-  }
-
-
-  mc.addTime(encoderValue);
-
+  mc.setTime(value);
 
 }
