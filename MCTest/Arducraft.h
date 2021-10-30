@@ -11,11 +11,11 @@ public:
      Minecraft(){
      
      }
-
      void deamonAttach(Stream* newserial);
      String readMessage();
      bool ifContainsWord(String message, String word);
      void writeMessage(String message);
+     void setTime(int value);
 };
 
 void Minecraft::deamonAttach(Stream* newserial){
@@ -47,5 +47,13 @@ void Minecraft::writeMessage(String message) {
     this->serial->print(message);
     this->serial->print("\n");
 }
+
+
+void Minecraft::setTime(int value) {
+    this->serial->print("/time set ");
+    this->serial->print(value);
+    this->serial->print("t\n");
+}
+
 
 #endif

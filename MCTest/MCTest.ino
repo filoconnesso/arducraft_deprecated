@@ -1,17 +1,16 @@
 #include "Arducraft.h"
 
 #define LED 13
-#define LED2 12
-#define BUTTON 8
+#define LED2 8
+#define POT A0
 
 Minecraft mc;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   mc.deamonAttach(&Serial);
   pinMode(LED, OUTPUT);
   pinMode(LED2, OUTPUT);
-  pinMode(BUTTON, INPUT_PULLUP);
 }
 
 void loop() {
@@ -35,8 +34,10 @@ void loop() {
     digitalWrite(LED2, LOW);
   }
 
-  if(digitalRead(BUTTON) == LOW) {
-    mc.writeMessage("hello, world!");
-  }
-  
+  int value = analogRead(A0);
+
+  value = map(value, 0, 1023, 0, 23000);
+
+  mc.setTime(value);
+
 }

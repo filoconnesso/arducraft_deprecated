@@ -78,7 +78,7 @@ function Main() {
       });
 
       const device = new serialPort(answers.serial_port, { 
-        baudRate: 115200,
+        baudRate: 9600,
       });
 
       const parser = device.pipe(new Readline({ delimiter: '\n' }))
