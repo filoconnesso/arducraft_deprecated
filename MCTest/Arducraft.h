@@ -3,6 +3,10 @@
 
 #include "Arduino.h"
 
+#define CLEAR 1
+#define RAIN 2
+#define THUNDER 3
+
 class Minecraft {
   private:
     Stream * serial;
