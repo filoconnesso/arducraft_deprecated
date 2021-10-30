@@ -33,6 +33,7 @@ Follow the instructions that are shown in the terminal :
 
 # Configuration for Minecraft 
 
+* You need the creative mode
 * Activate command blocks and cheat codes in minecraft world configuration
 * Make your bot to operator with "/op botname"
 * In localhost mode you must use the LAN
