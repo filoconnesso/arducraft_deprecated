@@ -49,7 +49,7 @@ serialPort.list().then((ports) => {
       name: "port",
       message: "Indicate the port: ",
       default() {
-        return '25565';
+        return "25565";
       },
     },
     {
@@ -57,7 +57,7 @@ serialPort.list().then((ports) => {
       name: "version",
       message: "Indicate the server version: ",
       default() {
-        return '1.17.1';
+        return "1.17.1";
       },
     },
     {
@@ -69,6 +69,10 @@ serialPort.list().then((ports) => {
 
   Main();
 });
+
+function DaemonCommandParser(message) {
+  return message.includes("[DAEMON-CMD]");
+}
 
 function Main() {
   inquirer
@@ -82,6 +86,14 @@ function Main() {
         version: answers.version,
       });
 
+      function lookAtPlayer() {
+        const playerFilter = (entity) => entity.type === "player";
+        const playerEntity = bot.nearestEntity(playerFilter);
+        if (!playerEntity) return;
+        const pos = playerEntity.position;
+        bot.lookAt(pos);
+      }
+
       const device = new serialPort(answers.serial_port, {
         baudRate: 115200,
       });
@@ -93,7 +105,18 @@ function Main() {
         parser.on("data", (data) => {
           let command = data;
           command = command.replace(/(\r\n|\n|\r)/gm, "");
-          bot.chat(command);
+          console.log(command);
+          if (DaemonCommandParser(command)) {
+            command = command.replace("[DAEMON-CMD] ", "");
+            switch (command) {
+              case "getTime":
+                device.write("[TIME-RESPONSE] " + bot.time.timeOfDay);
+                break;
+            }
+          } else {
+            console.log(command);
+            bot.chat(command);
+          }
         });
       };
 
@@ -103,14 +126,6 @@ function Main() {
         if (username === bot.username) return;
         device.write(message + "\n");
       });
-
-      function lookAtPlayer() {
-        const playerFilter = (entity) => entity.type === "player";
-        const playerEntity = bot.nearestEntity(playerFilter);
-        if (!playerEntity) return;
-        const pos = playerEntity.position;
-        bot.lookAt(pos);
-      }
 
       bot.on("physicTick", lookAtPlayer);
       bot.on("kicked", console.log);
