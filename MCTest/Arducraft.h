@@ -21,7 +21,7 @@
 #define RANDOM_PLAYER "@r"
 #define BOT "@s"
 
-//Entities 
+//Entities
 #define AXOLOTL "minecraft:axolotl"
 #define BAT "minecraft:bat"
 #define BEE "minecraft:bee"
@@ -98,7 +98,7 @@ class Minecraft {
     Stream * serial;
 
   public:
-    Minecraft() {s
+    Minecraft() {
 
     }
     void deamonAttach(Stream * newserial);
@@ -114,6 +114,8 @@ class Minecraft {
     void teleportEntityToEntity(String f_entity, String s_entity);
     void gameMode(String entity, int mode_value);
     void createEntity(String entity);
+    int getTime(String message);
+    void writeDaemonCommand(String message);
 };
 
 void Minecraft::deamonAttach(Stream * newserial) {
@@ -199,7 +201,7 @@ void Minecraft::teleportEntityToPosition(String entity, float x = 0, float y = 0
   this -> serial -> print("\n");
 }
 
-void Minecraft::teleportBotToEntity(String entity){
+void Minecraft::teleportBotToEntity(String entity) {
   this -> serial -> print("/tp ");
   this -> serial -> print(BOT);
   this -> serial -> print(" ");
@@ -244,5 +246,24 @@ void Minecraft::createEntity(String entity) {
   this -> serial -> print(entity);
   this -> serial -> print("\n");
 }
+
+
+void Minecraft::writeDaemonCommand(String message) {
+  this -> serial -> print("[DAEMON-CMD] ");
+  this -> serial -> print(message);
+  this -> serial -> print("\n");
+}
+
+
+int Minecraft::getTime(String message) {
+  writeDaemonCommand("getTime");
+  if (ifContainsWord(message, "[TIME-RESPONSE] ")) {
+    String parsed_command = message;
+    parsed_command.replace("[TIME-RESPONSE] ", "");
+    this -> serial -> print(parsed_command.toInt());
+    this -> serial -> print("\n");
+  }
+}
+
 
 #endif
