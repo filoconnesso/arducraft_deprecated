@@ -101,7 +101,7 @@ function Main() {
       const parser = device.pipe(new Readline({ delimiter: "\n" }));
 
       const ReadSerialPort = async () => {
-        await delay(1000);
+        await delay(2000);
         parser.on("data", (data) => {
           let command = data;
           command = command.replace(/(\r\n|\n|\r)/gm, "");

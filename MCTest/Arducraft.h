@@ -255,8 +255,15 @@ void Minecraft::writeDaemonCommand(String message) {
 }
 
 
+const unsigned long eventInterval = 10000;
+unsigned long previousTime = 0;
+
 int Minecraft::getTime(String message) {
-  writeDaemonCommand("getTime");
+  unsigned long currentTime = millis();
+  if (currentTime - previousTime >= eventInterval) {
+    writeDaemonCommand("getTime");
+    previousTime = currentTime;
+  }
   if (ifContainsWord(message, "[TIME-RESPONSE] ")) {
     String parsed_command = message;
     parsed_command.replace("[TIME-RESPONSE] ", "");
