@@ -7,7 +7,7 @@
 Minecraft mc;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(11520);
   mc.deamonAttach(&Serial);
   pinMode(LED, OUTPUT);
   pinMode(LED2, OUTPUT);
