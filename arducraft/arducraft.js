@@ -1,11 +1,9 @@
 const mineflayer = require("mineflayer");
 const serialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
-
 const inquirer = require("inquirer");
 
 let data = {};
-const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 let isArduinoReady = false;
 
 console.log("#####################################");
@@ -108,7 +106,6 @@ async function Main() {
             isArduinoReady = true;
           }
           if (isArduinoReady) {
-            delay(1000);
             let command = data;
             command = command.replace(/(\r\n|\n|\r)/gm, "");
             console.log(command);
