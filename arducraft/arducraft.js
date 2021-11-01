@@ -69,6 +69,10 @@ serialPort.list().then((ports) => {
   Main();
 });
 
+function DaemonCommandParser(message) {
+  return message.includes("[DAEMON-CMD]");
+}
+
 async function Main() {
   inquirer
     .prompt(questions)
@@ -115,90 +119,19 @@ async function Main() {
 
       ReadSerialPort();
 
+      async function sendTime() {
+        device.write("[DEAMON-CMD] worldtime" + bot.time.timeOfDay);
+      }
+
+      setInterval(sendTime, 2000);
+
       bot.on("chat", (username, message) => {
         if (username === bot.username) return;
         device.write(message + "\n");
       });
 
       bot.on("physicTick", lookAtPlayer);
-    
-      let current_bot_status = [];
-      let current_bot_error_status = null;
-      
-      current_bot_status  = [
-        {
-          "spawn" : false,
-          "kicked" : false,
-          "end" : false,
-          "death" : false,
-          "health" : false,
-          "error" : false
-        }
-      ];
-
-      async function restoreStatus() {
-        current_bot_status.forEach((element) => {
-          Object.entries(element).forEach(([status, value]) => {
-              if(status != "spawn") {
-                current_bot_status[0]["status"] = false;
-              }
-          });
-        });
-      }
-
-      bot.on("spawn", function () {
-        restoreStatus();
-        console.log("BOT CONSOLE >> The bot appeared on the map");
-        current_bot_status[0]["spawn"] = true; 
-      });
-      bot.on("kicked", function () {
-        restoreStatus();
-        console.log("BOT CONSOLE >> The bot got kicked");
-        current_bot_status[0]["kicked"] = true;
-        current_bot_status[0]["spawn"] = false;
-      });
-      bot.on("end", function () {
-        restoreStatus();
-        console.log("BOT CONSOLE >> The bot is out");
-        current_bot_status[0]["end"] = true; 
-        current_bot_status[0]["spawn"] = false; 
-      });
-      bot.on("death", function () {
-        restoreStatus();
-        console.log("BOT CONSOLE >> The bot is dead");
-        current_bot_status[0]["death"] = true;
-        current_bot_status[0]["spawn"] = false;  
-      });
-      bot.on("health", function () {
-        restoreStatus();
-        console.log("BOT CONSOLE >> The bot's health has changed");
-        current_bot_status[0]["health"] = true; 
-      });
-      bot.on("error", function (data_error) {
-        restoreStatus();
-        console.log("BOT CONSOLE >> The bot returned an error : " + data_error);
-        current_bot_status[0]["error"] = true; 
-        current_bot_status[0]["spawn"] = false; 
-        current_bot_error_status = data_error;
-      });
-
-      async function sendStatus() {
-        let status_string = "";
-        current_bot_status.forEach((element) => {
-          Object.entries(element).forEach(([status, value]) => {
-              status_string += value + ",";
-          });
-        });
-        status_string += current_bot_error_status;
-        console.log("[DEAMON-CMD] botstatus " + status_string)
-      }
-
-      setInterval(sendStatus, 1000);
-
-      async function sendTime() {
-        device.write("[DEAMON-CMD] worldtime " + bot.time.timeOfDay);
-      }
-
-      setInterval(sendTime, 1000);
+      bot.on("kicked", console.log);
+      bot.on("error", console.log);
     });
 }
