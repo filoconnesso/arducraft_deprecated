@@ -6,6 +6,7 @@ const inquirer = require("inquirer");
 
 let data = {};
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+let isArduinoReady = false;
 
 console.log("#####################################");
 console.log("#                                   #");
@@ -101,21 +102,20 @@ async function Main() {
       const parser = device.pipe(new Readline({ delimiter: "\n" }));
 
       const ReadSerialPort = async () => {
-        await delay(1000);
         parser.on("data", (data) => {
-          let command = data;
-          command = command.replace(/(\r\n|\n|\r)/gm, "");
-          console.log(command);
-          if (DaemonCommandParser(command)) {
-            command = command.replace("[DAEMON-CMD] ", "");
-            switch (command) {
-              case "getTime":
-                device.write("[TIME-RESPONSE] " + bot.time.timeOfDay);
-                break;
-            }
-          } else {
+          if (data.includes("sys initialized")) {
+            device.write("OK");
+            isArduinoReady = true;
+          }
+          if (isArduinoReady) {
+            delay(1000);
+            let command = data;
+            command = command.replace(/(\r\n|\n|\r)/gm, "");
             console.log(command);
-            bot.chat(command);
+            if (!data.includes("sys initialized")) {
+              console.log(command);
+              bot.chat(command);
+            }
           }
         });
       };

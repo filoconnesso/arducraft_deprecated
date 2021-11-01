@@ -94,13 +94,14 @@
 #define ZOMBIFIED_PIGLIN "minecraft:zombified_piglin"
 
 class Minecraft {
-    private:
+  private:
     unsigned long curMillis = millis();
     unsigned long prevMillis = millis();
     unsigned long timerMillis = 10;
     unsigned long worldtime = 0;
     String lastMessage = "";
-    public:
+    bool HandShakeBoot = false;
+  public:
     Stream * serial;
     Minecraft() {
       prevMillis = millis();
@@ -259,11 +260,20 @@ int Minecraft::getTime() {
 
 void Minecraft::run() {
   curMillis = millis();
-  if((unsigned long)curMillis - prevMillis >= timerMillis) {
+  if (HandShakeBoot)
+  {
+    if ((unsigned long)curMillis - prevMillis >= timerMillis) {
+      lastMessage =  this -> serial -> readStringUntil('\n');
+      if (ifContainsWord(lastMessage, "[TIME-RESPONSE] ")) {
+        lastMessage.replace("[TIME-RESPONSE] ", "");
+        worldtime = lastMessage.toInt();
+      }
+    }
+  } else {
+    Serial.println("sys initialized");
     lastMessage =  this -> serial -> readStringUntil('\n');
-    if (ifContainsWord(lastMessage, "[TIME-RESPONSE] ")) {
-      lastMessage.replace("[TIME-RESPONSE] ", "");
-      worldtime = lastMessage.toInt();
+    if (ifContainsWord(lastMessage, "OK")) {
+      HandShakeBoot = true;
     }
   }
 }
