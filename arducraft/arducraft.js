@@ -108,7 +108,6 @@ async function Main() {
           if (isArduinoReady) {
             let command = data;
             command = command.replace(/(\r\n|\n|\r)/gm, "");
-            console.log(command);
             if (!data.includes("[ARDUINO-CMD] connect")) {
               console.log(command);
               bot.chat(command);
@@ -131,7 +130,10 @@ async function Main() {
       });
 
       bot.on("physicTick", lookAtPlayer);
+      
+
       bot.on("kicked", console.log);
       bot.on("error", console.log);
+
     });
 }
