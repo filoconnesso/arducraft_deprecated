@@ -94,12 +94,16 @@
 #define ZOMBIFIED_PIGLIN "minecraft:zombified_piglin"
 
 class Minecraft {
-  private:
+    private:
+    unsigned long curMillis = millis();
+    unsigned long prevMillis = millis();
+    unsigned long timerMillis = 10;
+    unsigned long worldtime = 0;
+    String lastMessage = "";
+    public:
     Stream * serial;
-
-  public:
     Minecraft() {
-
+      prevMillis = millis();
     }
     void deamonAttach(Stream * newserial);
     String readMessage();
@@ -114,8 +118,9 @@ class Minecraft {
     void teleportEntityToEntity(String f_entity, String s_entity);
     void gameMode(String entity, int mode_value);
     void createEntity(String entity);
-    int getTime(String message);
+    int getTime();
     void writeDaemonCommand(String message);
+    void run();
 };
 
 void Minecraft::deamonAttach(Stream * newserial) {
@@ -123,12 +128,7 @@ void Minecraft::deamonAttach(Stream * newserial) {
 }
 
 String Minecraft::readMessage() {
-  String r = "";
-  while (this -> serial -> available()) {
-    String c = this -> serial -> readStringUntil('\n');
-    r += c;
-  }
-  return r;
+  return lastMessage;
 }
 
 bool Minecraft::ifContainsWord(String message, String word) {
@@ -247,28 +247,24 @@ void Minecraft::createEntity(String entity) {
   this -> serial -> print("\n");
 }
 
-
 void Minecraft::writeDaemonCommand(String message) {
   this -> serial -> print("[DAEMON-CMD] ");
   this -> serial -> print(message);
   this -> serial -> print("\n");
 }
 
+int Minecraft::getTime() {
+  return worldtime;
+}
 
-const unsigned long eventInterval = 10000;
-unsigned long previousTime = 0;
-
-int Minecraft::getTime(String message) {
-  unsigned long currentTime = millis();
-  if (currentTime - previousTime >= eventInterval) {
-    writeDaemonCommand("getTime");
-    previousTime = currentTime;
-  }
-  if (ifContainsWord(message, "[TIME-RESPONSE] ")) {
-    String parsed_command = message;
-    parsed_command.replace("[TIME-RESPONSE] ", "");
-    this -> serial -> print(parsed_command.toInt());
-    this -> serial -> print("\n");
+void Minecraft::run() {
+  curMillis = millis();
+  if((unsigned long)curMillis - prevMillis >= timerMillis) {
+    lastMessage =  this -> serial -> readStringUntil('\n');
+    if (ifContainsWord(lastMessage, "[TIME-RESPONSE] ")) {
+      lastMessage.replace("[TIME-RESPONSE] ", "");
+      worldtime = lastMessage.toInt();
+    }
   }
 }
 
