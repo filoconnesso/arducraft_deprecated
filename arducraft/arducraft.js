@@ -74,7 +74,7 @@ function DaemonCommandParser(message) {
   return message.includes("[DAEMON-CMD]");
 }
 
-function Main() {
+async function Main() {
   inquirer
     .prompt(questions)
 
@@ -101,7 +101,7 @@ function Main() {
       const parser = device.pipe(new Readline({ delimiter: "\n" }));
 
       const ReadSerialPort = async () => {
-        await delay(2000);
+        await delay(1000);
         parser.on("data", (data) => {
           let command = data;
           command = command.replace(/(\r\n|\n|\r)/gm, "");
@@ -121,6 +121,12 @@ function Main() {
       };
 
       ReadSerialPort();
+
+      async function sendTime() {
+        device.write("[TIME-RESPONSE] " + bot.time.timeOfDay);
+      }
+
+      setInterval(sendTime, 2000);
 
       bot.on("chat", (username, message) => {
         if (username === bot.username) return;
