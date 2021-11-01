@@ -264,15 +264,15 @@ void Minecraft::run() {
   {
     if ((unsigned long)curMillis - prevMillis >= timerMillis) {
       lastMessage =  this -> serial -> readStringUntil('\n');
-      if (ifContainsWord(lastMessage, "[TIME-RESPONSE] ")) {
-        lastMessage.replace("[TIME-RESPONSE] ", "");
+      if (ifContainsWord(lastMessage, "[DEAMON-CMD] worldtime")) {
+        lastMessage.replace("[DEAMON-CMD] worldtime", "");
         worldtime = lastMessage.toInt();
       }
     }
   } else {
-    Serial.println("sys initialized");
+    this -> serial -> print("[ARDUINO-CMD] connect");
     lastMessage =  this -> serial -> readStringUntil('\n');
-    if (ifContainsWord(lastMessage, "OK")) {
+    if (ifContainsWord(lastMessage, "[DEAMON-CMD] connected")) {
       HandShakeBoot = true;
     }
   }
