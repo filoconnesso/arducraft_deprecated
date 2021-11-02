@@ -109,7 +109,7 @@ async function Main() {
             let command = data;
             command = command.replace(/(\r\n|\n|\r)/gm, "");
             if (!data.includes("[ARDUINO-CMD] connect")) {
-              console.log(command);
+              console.log(`BOT CONSOLE >>> ${command}`);
               bot.chat(command);
             }
           }
@@ -118,8 +118,38 @@ async function Main() {
 
       ReadSerialPort();
 
+      current_bot_status  = [
+        {
+          "spawn" : false,
+          "kicked" : false,
+          "end" : false,
+          "death" : false,
+          "health" : false,
+          "error" : false
+        }
+      ];
+
+      bot.on("spawn", function () {
+        console.log("BOT CONSOLE >>> The bot appeared on the map");
+      });
+      bot.on("kicked", function () {
+        console.log("BOT CONSOLE >>> The bot got kicked");
+      });
+      bot.on("end", function () {
+        console.log("BOT CONSOLE >>> The bot is out");
+      });
+      bot.on("death", function () {
+        console.log("BOT CONSOLE >>> The bot is dead");
+      });
+      bot.on("health", function () {
+        console.log("BOT CONSOLE >>> The bot's health has changed");
+      });
+      bot.on("error", function (error_message) {
+        console.log(`BOT CONSOLE >>> The bot gave an error : ${error_message}`);
+      });
+
       async function sendTime() {
-        device.write("[DEAMON-CMD] worldtime" + bot.time.timeOfDay);
+        device.write(`[DEAMON-CMD] worldtime ${bot.time.timeOfDay}`);
       }
 
       setInterval(sendTime, 2000);
@@ -130,10 +160,5 @@ async function Main() {
       });
 
       bot.on("physicTick", lookAtPlayer);
-      
-
-      bot.on("kicked", console.log);
-      bot.on("error", console.log);
-
     });
 }
