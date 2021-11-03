@@ -2,6 +2,7 @@ const mineflayer = require("mineflayer");
 const serialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 const inquirer = require("inquirer");
+const { restoreDefaultPrompts } = require("inquirer");
 
 let data = {};
 let isArduinoReady = false;
@@ -42,13 +43,16 @@ serialPort.list().then((ports) => {
       type: "input",
       name: "hostname",
       message: "Indicate the hostname: ",
+      default() {
+        return "localhost";
+      },
     },
     {
       type: "input",
       name: "port",
       message: "Indicate the port: ",
       default() {
-        return "25565";
+        return "61989";
       },
     },
     {
@@ -68,10 +72,6 @@ serialPort.list().then((ports) => {
 
   Main();
 });
-
-function DaemonCommandParser(message) {
-  return message.includes("[DAEMON-CMD]");
-}
 
 async function Main() {
   inquirer
@@ -101,62 +101,115 @@ async function Main() {
 
       const ReadSerialPort = async () => {
         parser.on("data", (data) => {
-          if (data.includes("[ARDUINO-CMD] connect")) {
-            device.write("[DEAMON-CMD] connected");
-            isArduinoReady = true;
-          }
-          if (isArduinoReady) {
+          if (botStarted) {
             let command = data;
             command = command.replace(/(\r\n|\n|\r)/gm, "");
-            if (!data.includes("[ARDUINO-CMD] connect")) {
-              console.log(`BOT CONSOLE >>> ${command}`);
-              bot.chat(command);
-            }
+            console.log(`BOT CONSOLE >>> ${command}`);
+            bot.chat(command);
           }
         });
       };
 
       ReadSerialPort();
 
-      current_bot_status  = [
+      let botStarted = false;
+      let minecraft_datas = [];
+
+      minecraft_datas = [
         {
-          "spawn" : false,
-          "kicked" : false,
-          "end" : false,
-          "death" : false,
-          "health" : false,
-          "error" : false
-        }
+          spawn: false,
+          kicked: false,
+          end: false,
+          death: false,
+          health: false,
+          error: false,
+          errorMessage: null,
+          worldTime: 0,
+          botExperience: 0,
+          botHealth: 0,
+          botFood: 0,
+          botOxygen: 0,
+          botGameMode: null,
+          raining: false,
+        },
       ];
+
+      async function restoreBotDataLifeStatus() {
+        minecraft_datas.forEach((datas) => {
+          Object.entries(datas).forEach(([dataType, dataValue]) => {
+            if (
+              dataType == "spawn" ||
+              dataType == "kicked" ||
+              dataType == "end" ||
+              dataType == "death" ||
+              dataType == "health" ||
+              dataType == "error"
+            ) {
+              minecraft_datas[0][dataType] = false;
+            }
+          });
+        });
+      }
 
       bot.on("spawn", function () {
         console.log("BOT CONSOLE >>> The bot appeared on the map");
+        minecraft_datas[0]["spawn"] = true;
+        botStarted = true;
       });
       bot.on("kicked", function () {
         console.log("BOT CONSOLE >>> The bot got kicked");
+        minecraft_datas[0]["kicked"] = true;
       });
       bot.on("end", function () {
         console.log("BOT CONSOLE >>> The bot is out");
+        minecraft_datas[0]["end"] = true;
       });
       bot.on("death", function () {
         console.log("BOT CONSOLE >>> The bot is dead");
+        minecraft_datas[0]["death"] = true;
       });
       bot.on("health", function () {
         console.log("BOT CONSOLE >>> The bot's health has changed");
+        minecraft_datas[0]["health"] = true;
       });
       bot.on("error", function (error_message) {
         console.log(`BOT CONSOLE >>> The bot gave an error : ${error_message}`);
+        minecraft_datas[0]["errorMessage"] = error_message;
+        minecraft_datas[0]["error"] = true;
       });
 
-      async function sendTime() {
-        device.write(`[DEAMON-CMD] worldtime ${bot.time.timeOfDay}`);
+      function sendMinecraftData() {
+        if (botStarted) {
+          minecraft_datas[0]["worldTime"] = bot.time.timeOfDay;
+          minecraft_datas[0]["botExperience"] = bot.experience.points;
+          minecraft_datas[0]["botHealth"] = bot.health;
+          minecraft_datas[0]["botFood"] = bot.food;
+          minecraft_datas[0]["botOxygen"] = bot.oxygenLevel;
+          minecraft_datas[0]["botGameMode"] = bot.game.gameMode;
+          minecraft_datas[0]["raining"] = bot.isRaining;
+          let minecraft_datas_string = "[DEAMON-CMD] datas ";
+          minecraft_datas.forEach((datas) => {
+            Object.entries(datas).forEach(([dataType, dataValue]) => {
+              minecraft_datas_string += `${dataValue};`;
+            });
+          });
+          minecraft_datas_string += "endata";
+          device.write(minecraft_datas_string + "\n");
+          if(minecraft_datas[0]["kicked"] || minecraft_datas[0]["error"]) {
+            botStarted = false;
+          }
+          restoreBotDataLifeStatus();
+        }
       }
 
-      setInterval(sendTime, 2000);
+      setInterval(sendMinecraftData, 10);
 
       bot.on("chat", (username, message) => {
-        if (username === bot.username) return;
-        device.write(message + "\n");
+        if(botStarted) {
+          if (username === bot.username) return;
+          console.log(`BOT CONSOLE >>> ${username} : ${message}`);
+          device.write(message + "\n");
+        }
       });
 
       bot.on("physicTick", lookAtPlayer);
