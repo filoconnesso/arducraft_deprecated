@@ -2,27 +2,46 @@
 
 Minecraft mc;
 
-
 void setup() {
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
   pinMode(13, OUTPUT);
+  pinMode(8, OUTPUT);
 }
 
 void loop() {
-  
+
   mc.run();
 
   String cmd = mc.readMessage();
 
-  if(mc.ifContainsWord(cmd, "led4on")) {
+  if (mc.ifContainsWord(cmd, "ledon")) {
     digitalWrite(13, HIGH);
+    mc.writeMessage("led is on!");
   }
 
-  if(mc.ifContainsWord(cmd, "led4off")) {
+  if (mc.ifContainsWord(cmd, "ledoff")) {
     digitalWrite(13, LOW);
+    mc.writeMessage("led is off!");
   }
 
-  mc.writeMessage(String(mc.getTime()));
+  if (mc.isRaining()) {
+    digitalWrite(8, HIGH);
+  } else {
+    digitalWrite(8, LOW);
+  }
+
+  if (mc.botIsSpawned()) {
+    mc.writeMessage("I am spawned!");
+    mc.writeMessage("Current World Time " + String(mc.getWorldTime()));
+  }
+  
+  if (mc.botIsDeath()) {
+    mc.writeMessage("I am death!");
+  }
+
+  if (mc.botHealthIsChanged()) {
+    mc.writeMessage("My health has changed!");
+  }
 
 }
