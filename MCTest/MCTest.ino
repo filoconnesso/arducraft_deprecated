@@ -36,7 +36,7 @@ void loop() {
     mc.writeMessage("Current World Time " + String(mc.getWorldTime()));
   }
   
-  if (mc.botIsDeath()) {
+  if (mc.botIsDead()) {
     mc.writeMessage("I am death!");
   }
 
