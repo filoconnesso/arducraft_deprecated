@@ -73,6 +73,6 @@ void loop() {
   }
   if (ping.debounce())
   {
-    mc.gameMode("NobleJunglist", 2);
+    mc.writeMessage(String(mc.PingValue()));
   }
 }
