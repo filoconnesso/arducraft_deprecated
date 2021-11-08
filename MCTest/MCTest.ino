@@ -1,12 +1,25 @@
 #include "Arducraft.h"
 
+#define pb1 0
+#define pb2 1
+#define pb3 2
+#define pingPin 23
+
 Minecraft mc;
+Debouncer db1;
+Debouncer db2;
+Debouncer db3;
+Debouncer ping;
 
 void setup() {
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
   pinMode(13, OUTPUT);
   pinMode(8, OUTPUT);
+  db1.begin(pb1);
+  db2.begin(pb2);
+  db3.begin(pb3);
+  ping.begin(pingPin);
 }
 
 void loop() {
@@ -17,12 +30,12 @@ void loop() {
 
   if (mc.ifContainsWord(cmd, "ledon")) {
     digitalWrite(13, HIGH);
-    mc.writeMessage("led is on!");
+    //mc.writeMessage("led is on!");
   }
 
   if (mc.ifContainsWord(cmd, "ledoff")) {
     digitalWrite(13, LOW);
-    mc.writeMessage("led is off!");
+    //mc.writeMessage("led is off!");
   }
 
   if (mc.isRaining()) {
@@ -35,8 +48,8 @@ void loop() {
     mc.writeMessage("I am spawned!");
     mc.writeMessage("Current World Time " + String(mc.getWorldTime()));
   }
-  
-  if (mc.botIsDeath()) {
+
+  if (mc.botIsDead()) {
     mc.writeMessage("I am dead!");
   }
 
@@ -44,4 +57,22 @@ void loop() {
     mc.writeMessage("My health has changed!");
   }
 
+  if (db1.debounce())
+  {
+    mc.setWeather(1);
+  }
+
+  if (db2.debounce())
+  {
+    mc.setWeather(2);
+  }
+
+  if (db3.debounce())
+  {
+    mc.setWeather(3);
+  }
+  if (ping.debounce())
+  {
+    mc.gameMode("NobleJunglist", 2);
+  }
 }

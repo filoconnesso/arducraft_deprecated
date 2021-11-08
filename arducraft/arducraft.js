@@ -67,6 +67,9 @@ serialPort.list().then((ports) => {
       type: "input",
       name: "bot_name",
       message: "Indicate the bot name: ",
+      default() {
+        return "teensynator6000";
+      },
     },
   ];
 
@@ -131,6 +134,7 @@ async function Main() {
           botOxygen: 0,
           botGameMode: null,
           raining: false,
+          ping: 0,
         },
       ];
 
@@ -186,7 +190,8 @@ async function Main() {
           minecraft_datas[0]["botFood"] = bot.food;
           minecraft_datas[0]["botOxygen"] = bot.oxygenLevel;
           minecraft_datas[0]["botGameMode"] = bot.game.gameMode;
-          minecraft_datas[0]["raining"] = bot.isRaining;
+          minecraft_datas[0]["raining"] = !bot.isRaining;
+          minecraft_datas[0]["ping"] = bot.player.ping;
           let minecraft_datas_string = "[DEAMON-CMD] datas ";
           minecraft_datas.forEach((datas) => {
             Object.entries(datas).forEach(([dataType, dataValue]) => {
@@ -201,7 +206,6 @@ async function Main() {
           restoreBotDataLifeStatus();
         }
       }
-
       setInterval(sendMinecraftData, 10);
 
       bot.on("chat", (username, message) => {

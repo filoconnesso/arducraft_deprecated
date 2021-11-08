@@ -108,6 +108,24 @@ String splitString(String string, char separator, int index)
   return found > index ? string.substring(strIndex[0], strIndex[1]) : "";
 }
 
+class Debouncer
+{
+  private:
+    uint8_t btn;
+    uint16_t state;
+  public:
+    void begin(uint8_t button) {
+      btn = button;
+      state = 0;
+      pinMode(btn, INPUT_PULLUP);
+    }
+    bool debounce() {
+      state = (state << 1) | digitalRead(btn) | 0xfe00;
+      return (state == 0xff00);
+    }
+};
+
+
 class Minecraft {
   private:
     unsigned long curMillis = millis();
@@ -121,6 +139,7 @@ class Minecraft {
     int botExperience, botHealth, botFood, botOxygen = 0;
     String botGameMode = "";
     bool raining = false;
+    int pingValue;
   public:
     Stream * serial;
     Minecraft() {
@@ -146,7 +165,7 @@ class Minecraft {
     bool botIsSpawned();
     bool botIsKicked();
     bool botIsEnded();
-    bool botIsDeath();
+    bool botIsDead();
     bool botHealthIsChanged();
     bool botErrorOccurred();
     int getBotExperienceLevel();
@@ -156,6 +175,7 @@ class Minecraft {
     String getBotGameMode();
     bool isRaining();
     bool botReady();
+    int PingValue();
 };
 
 void Minecraft::deamonAttach(Stream * newserial) {
@@ -177,109 +197,109 @@ bool Minecraft::ifContainsWord(String message, String word) {
 }
 
 void Minecraft::writeMessage(String message) {
-    this -> serial -> print("/say ");
-    this -> serial -> print(message);
-    this -> serial -> print("\n");
+  this -> serial -> print("/say ");
+  this -> serial -> print(message);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::setWorldTime(int value) {
-    this -> serial -> print("/time set ");
-    this -> serial -> print(value);
-    this -> serial -> print("\n");
+  this -> serial -> print("/time set ");
+  this -> serial -> print(value);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::addWorldTime(int value) {
-    this -> serial -> print("/time add ");
-    this -> serial -> print(value);
-    this -> serial -> print("t\n");
+  this -> serial -> print("/time add ");
+  this -> serial -> print(value);
+  this -> serial -> print("t\n");
 }
 
 void Minecraft::setWeather(int weather_value) {
-    String switched_weather;
-    switch (weather_value) {
-      case 1:
-        switched_weather = "clear";
-        break;
-      case 2:
-        switched_weather = "rain";
-        break;
-      case 3:
-        switched_weather = "thunder";
-        break;
-    }
-    this -> serial -> print("/weather ");
-    this -> serial -> print(switched_weather);
-    this -> serial -> print("\n");
+  String switched_weather;
+  switch (weather_value) {
+    case 1:
+      switched_weather = "clear";
+      break;
+    case 2:
+      switched_weather = "rain";
+      break;
+    case 3:
+      switched_weather = "thunder";
+      break;
+  }
+  this -> serial -> print("/weather ");
+  this -> serial -> print(switched_weather);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::teleportBotToPosition(float x = 0, float y = 0, float z = 0) {
-    this -> serial -> print("/tp ");
-    this -> serial -> print(BOT);
-    this -> serial -> print(" ");
-    this -> serial -> print(x);
-    this -> serial -> print(" ");
-    this -> serial -> print(y);
-    this -> serial -> print(" ");
-    this -> serial -> print(z);
-    this -> serial -> print("\n");
+  this -> serial -> print("/tp ");
+  this -> serial -> print(BOT);
+  this -> serial -> print(" ");
+  this -> serial -> print(x);
+  this -> serial -> print(" ");
+  this -> serial -> print(y);
+  this -> serial -> print(" ");
+  this -> serial -> print(z);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::teleportEntityToPosition(String entity, float x = 0, float y = 0, float z = 0) {
-    this -> serial -> print("/tp ");
-    this -> serial -> print(entity);
-    this -> serial -> print(" ");
-    this -> serial -> print(x);
-    this -> serial -> print(" ");
-    this -> serial -> print(y);
-    this -> serial -> print(" ");
-    this -> serial -> print(z);
-    this -> serial -> print("\n");
+  this -> serial -> print("/tp ");
+  this -> serial -> print(entity);
+  this -> serial -> print(" ");
+  this -> serial -> print(x);
+  this -> serial -> print(" ");
+  this -> serial -> print(y);
+  this -> serial -> print(" ");
+  this -> serial -> print(z);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::teleportBotToEntity(String entity) {
-    this -> serial -> print("/tp ");
-    this -> serial -> print(BOT);
-    this -> serial -> print(" ");
-    this -> serial -> print(entity);
-    this -> serial -> print("\n");
+  this -> serial -> print("/tp ");
+  this -> serial -> print(BOT);
+  this -> serial -> print(" ");
+  this -> serial -> print(entity);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::teleportEntityToEntity(String f_entity, String s_entity) {
-    this -> serial -> print("/tp ");
-    this -> serial -> print(f_entity);
-    this -> serial -> print(" ");
-    this -> serial -> print(s_entity);
-    this -> serial -> print("\n");
+  this -> serial -> print("/tp ");
+  this -> serial -> print(f_entity);
+  this -> serial -> print(" ");
+  this -> serial -> print(s_entity);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::gameMode(String entity, int mode_value) {
-    String switched_mode;
-    switch (mode_value) {
-      case 1:
-        switched_mode = "adventure";
-        break;
-      case 2:
-        switched_mode = "creative";
-        break;
-      case 3:
-        switched_mode = "spectator";
-        break;
-      case 4:
-        switched_mode = "survival";
-        break;
-    }
-    this -> serial -> print("/gamemode ");
-    this -> serial -> print(" ");
-    this -> serial -> print(switched_mode);
-    this -> serial -> print(" ");
-    this -> serial -> print(entity);
-    this -> serial -> print("\n");
+  String switched_mode;
+  switch (mode_value) {
+    case 1:
+      switched_mode = "adventure";
+      break;
+    case 2:
+      switched_mode = "creative";
+      break;
+    case 3:
+      switched_mode = "spectator";
+      break;
+    case 4:
+      switched_mode = "survival";
+      break;
+  }
+  this -> serial -> print("/gamemode ");
+  this -> serial -> print(" ");
+  this -> serial -> print(switched_mode);
+  this -> serial -> print(" ");
+  this -> serial -> print(entity);
+  this -> serial -> print("\n");
 }
 
 void Minecraft::createEntity(String entity) {
-    this -> serial -> print("/summon ");
-    this -> serial -> print(entity);
-    this -> serial -> print("\n");
+  this -> serial -> print("/summon ");
+  this -> serial -> print(entity);
+  this -> serial -> print("\n");
 }
 
 bool Minecraft::botIsSpawned() {
@@ -294,7 +314,7 @@ bool Minecraft::botIsEnded() {
   return end;
 }
 
-bool Minecraft::botIsDeath() {
+bool Minecraft::botIsDead() {
   return death;
 }
 
@@ -338,6 +358,10 @@ bool Minecraft::isRaining() {
   return raining;
 }
 
+int Minecraft::PingValue() {
+  return pingValue;
+}
+
 void Minecraft::run() {
   curMillis = millis();
   if ((unsigned long)curMillis - prevMillis >= timerMillis) {
@@ -346,32 +370,33 @@ void Minecraft::run() {
 
     if (ifContainsWord(lastMessage, "[DEAMON-CMD] datas ")) {
       lastMessage.replace("[DEAMON-CMD] datas ", "");
-      
+
       String spawnValue = splitString(lastMessage, ';', 0);
       String kickedValue = splitString(lastMessage, ';', 1);
       String endValue = splitString(lastMessage, ';', 2);
       String deathValue = splitString(lastMessage, ';', 3);
       String healthValue = splitString(lastMessage, ';', 4);
       String errorValue = splitString(lastMessage, ';', 5);
-      
+      String pingVal = splitString(lastMessage, ';', 14);
+
       if (spawnValue == "true") spawn = true;
       if (spawnValue == "false") spawn = false;
-      
+
       if (kickedValue == "true") kicked = true;
       if (kickedValue == "false") kicked = false;
-      
+
       if (endValue == "true") end = true;
       if (endValue == "false") end = false;
-      
+
       if (healthValue == "true") health = true;
       if (healthValue == "false") health = false;
-      
+
       if (deathValue == "true") death = true;
       if (deathValue == "false") death = false;
-      
+
       if (errorValue == "true") error = true;
       if (errorValue == "false") error = false;
-      
+
       errorMessage = splitString(lastMessage, ';', 6);
       worldTime = splitString(lastMessage, ';', 7).toInt();
       botExperience = splitString(lastMessage, ';', 8).toInt();
@@ -379,17 +404,18 @@ void Minecraft::run() {
       botFood = splitString(lastMessage, ';', 10).toInt();
       botOxygen = splitString(lastMessage, ';', 11).toInt();
       botGameMode = splitString(lastMessage, ';', 12);
-      
+
       String rainingValue = splitString(lastMessage, ';', 13);
-      
+
       if (rainingValue == "true") raining = true;
       if (rainingValue == "false") raining = false;
-      
+
+      pingValue = pingVal.toInt();
     }
-    
+
     this->serial->flush();
     prevMillis = curMillis;
-    
+
   }
 }
 
