@@ -1,31 +1,30 @@
 #include "Arducraft.h"
 
-#define pb1 0
-#define pb2 1
-#define pb3 2
-#define pingPin 23
+bool draw_square = false;
+
+#define BUTTON_PIN1 12
+#define BUTTON_PIN2 11
+#define BUTTON_PIN3 10
+#define BUTTON_PING 9
 
 Minecraft mc;
-Debouncer db1;
-Debouncer db2;
-Debouncer db3;
-Debouncer ping;
+
+MinecraftButton mcbutton1(BUTTON_PIN1, INPUT_PULLUP);
+MinecraftButton mcbutton2(BUTTON_PIN2, INPUT_PULLUP);
+MinecraftButton mcbutton3(BUTTON_PIN3, INPUT_PULLUP);
+MinecraftButton mcbuttonping(BUTTON_PING, INPUT_PULLUP);
 
 void setup() {
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
   pinMode(13, OUTPUT);
   pinMode(8, OUTPUT);
-  db1.begin(pb1);
-  db2.begin(pb2);
-  db3.begin(pb3);
-  ping.begin(pingPin);
 }
 
 void loop() {
 
   mc.run();
-
+  
   String cmd = mc.readMessage();
 
   if (mc.ifContainsWord(cmd, "ledon")) {
@@ -46,7 +45,8 @@ void loop() {
 
   if (mc.botIsSpawned()) {
     mc.writeMessage("I am spawned!");
-    mc.writeMessage("Current World Time " + String(mc.getWorldTime()));
+    mc.writeMessage("Current World Time = " + String(mc.getWorldTime()));
+    mc.writeMessage("My coords are x = " + String(mc.getBotPositionX()) + " y = " + String(mc.getBotPositionY()) + " z = " + String(mc.getBotPositionZ()));
   }
 
   if (mc.botIsDead()) {
@@ -57,22 +57,54 @@ void loop() {
     mc.writeMessage("My health has changed!");
   }
 
-  if (db1.debounce())
+  if (mcbutton1.pressed())
   {
-    mc.setWeather(1);
+    mc.setWeather(CLEAR);
+    draw_square = true;
   }
 
-  if (db2.debounce())
+  if (mcbutton2.pressed())
   {
-    mc.setWeather(2);
+    mc.setWeather(RAIN);
   }
 
-  if (db3.debounce())
+  if (mcbutton3.pressed())
   {
-    mc.setWeather(3);
+    mc.setWeather(THUNDER);
   }
-  if (ping.debounce())
+
+  if (mcbuttonping.pressed())
   {
     mc.writeMessage(String(mc.PingValue()));
   }
+
+  if (draw_square) {
+    for (int i = 0; i <= 9; i++) {
+      mc.botGoForward();
+      delay(300);
+      mc.placeBlock(RED_TERRACOTTA);
+      delay(100);
+    }
+    for (int i = 0; i <= 9; i++) {
+      mc.botGoLeft();
+      delay(300);
+      mc.placeBlock(YELLOW_TERRACOTTA);
+      delay(100);
+    }
+    for (int i = 0; i <= 9; i++) {
+      mc.botGoBack();
+      delay(300);
+      mc.placeBlock(ORANGE_TERRACOTTA);
+      delay(100);
+    }
+    for (int i = 0; i <= 9; i++) {
+      mc.botGoRight();
+      delay(300);
+      mc.placeBlock(PINK_TERRACOTTA);
+      delay(100);
+    }
+    mc.botJump();
+    draw_square = false;
+  }
+
 }
