@@ -6,14 +6,14 @@ Project for Java Edition
 
 # Installation
 
-Install NodeJS for your OS : https://nodejs.org/it/
+Install NodeJS for your OS : https://nodejs.org/
 
 Enter the folder contaning **arducraft.js** and type on terminal
 
 ```bash
 npm install
 ```
-After installation start ArduCraft with 
+After installation start ArduCraft with
 
 ```bash
 node arducraft.js
@@ -31,7 +31,7 @@ Follow the instructions that are shown in the terminal :
 * Set the Minecraft version (server only, for localhost this is not required).
 * Set the bot name.
 
-# Configuration for Minecraft 
+# Configuration for Minecraft
 
 * You need the creative mode
 * Activate command blocks and cheat codes in Minecraft world configuration
