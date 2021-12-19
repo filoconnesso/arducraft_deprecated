@@ -23,6 +23,14 @@ Upload the example code on your board.
 
 Open new Minecraft world and share it on lan or join into your server with offline mode enabled.
 
+# Configuration for Minecraft
+
+* You need the creative mode
+* Activate command blocks and cheat codes in Minecraft world configuration
+* Make your bot to operator with "/op botname"
+* In localhost mode you must use the LAN
+* When you're using command blocks you must set a name to them with the anvil to make the command work (say xxx)
+
 Follow the instructions that are shown in the terminal :
 
 * Select the serial port from list.
@@ -31,10 +39,9 @@ Follow the instructions that are shown in the terminal :
 * Set the Minecraft version (server only, for localhost this is not required).
 * Set the bot name.
 
-# Configuration for Minecraft
+<img src="https://filoconnesso.it/arducraft/deamon.png"/>
 
-* You need the creative mode
-* Activate command blocks and cheat codes in Minecraft world configuration
-* Make your bot to operator with "/op botname"
-* In localhost mode you must use the LAN
-* When you're using command blocks you must set a name to them with the anvil to make the command work (say xxx)
+Enjoy!
+
+<img src="https://filoconnesso.it/arducraft/ide.png"/>
+
