@@ -1,110 +1,98 @@
 #include "Arducraft.h"
 
-bool draw_square = false;
-
-#define BUTTON_PIN1 12
-#define BUTTON_PIN2 11
-#define BUTTON_PIN3 10
-#define BUTTON_PING 9
+#define BUTTON 12
+#define LED 13
 
 Minecraft mc;
+MinecraftButton mcbutton1(BUTTON, INPUT_PULLUP);
+MinecraftSequencer createLine;
+MinecraftSequencer createLine1;
+MinecraftSequencer createLine2;
+MinecraftSequencer createLine3;
 
-MinecraftButton mcbutton1(BUTTON_PIN1, INPUT_PULLUP);
-MinecraftButton mcbutton2(BUTTON_PIN2, INPUT_PULLUP);
-MinecraftButton mcbutton3(BUTTON_PIN3, INPUT_PULLUP);
-MinecraftButton mcbuttonping(BUTTON_PING, INPUT_PULLUP);
 
 void setup() {
+  pinMode(LED, OUTPUT);
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
-  pinMode(13, OUTPUT);
-  pinMode(8, OUTPUT);
+  createLine.addTask([] { mc.placeBlock(RED_TERRACOTTA); });
+  createLine.addTask([] { mc.botGoForward(); });
+  createLine1.addTask([] { mc.placeBlock(GREEN_TERRACOTTA); });
+  createLine1.addTask([] { mc.botGoLeft(); });
+  createLine2.addTask([] { mc.placeBlock(PURPLE_TERRACOTTA); });
+  createLine2.addTask([] { mc.botGoBack(); });
+  createLine3.addTask([] { mc.placeBlock(BROWN_TERRACOTTA); });
+  createLine3.addTask([] { mc.botGoRight(); });
 }
 
 void loop() {
 
   mc.run();
-  
+  createLine.run();
+  createLine1.run();
+  createLine2.run();
+  createLine3.run();
+
   String cmd = mc.readMessage();
 
-  if (mc.ifContainsWord(cmd, "ledon")) {
-    digitalWrite(13, HIGH);
-    //mc.writeMessage("led is on!");
+  if (cmd.indexOf("ledon") > -1) {
+    digitalWrite(LED, HIGH);
   }
 
-  if (mc.ifContainsWord(cmd, "ledoff")) {
-    digitalWrite(13, LOW);
-    //mc.writeMessage("led is off!");
+  if (cmd.indexOf("ledoff") > -1) {
+    digitalWrite(LED, LOW);
   }
 
-  if (mc.isRaining()) {
-    digitalWrite(8, HIGH);
-  } else {
-    digitalWrite(8, LOW);
-  }
+  /*mcbutton1.pressed([] {
+    createLine.go(5, 500, [] {
+      createLine1.go(5, 500, [] {
+        createLine2.go(5, 500, [] {
+          createLine3.go(5, 500, [] {
+            mc.waitBot();
+            mc.botJump();
+          });
+        });
+      });
+    }); //times, delay between tasks, end callback
+    });*/
 
-  if (mc.botIsSpawned()) {
-    mc.writeMessage("I am spawned!");
-    mc.writeMessage("Current World Time = " + String(mc.getWorldTime()));
-    mc.writeMessage("My coords are x = " + String(mc.getBotPositionX()) + " y = " + String(mc.getBotPositionY()) + " z = " + String(mc.getBotPositionZ()));
-  }
+  //static bool drawLine = false;
+  static bool leverStatus = false;
 
-  if (mc.botIsDead()) {
-    mc.writeMessage("I am dead!");
-  }
+  mcbutton1.pressed([] {
+    leverStatus = !leverStatus;
+    mc.lever(-49, 64, -221, leverStatus);
+    //drawLine = true;
+  });
 
-  if (mc.botHealthIsChanged()) {
-    mc.writeMessage("My health has changed!");
-  }
 
-  if (mcbutton1.pressed())
-  {
-    mc.setWeather(CLEAR);
-    draw_square = true;
-  }
-
-  if (mcbutton2.pressed())
-  {
-    mc.setWeather(RAIN);
-  }
-
-  if (mcbutton3.pressed())
-  {
-    mc.setWeather(THUNDER);
-  }
-
-  if (mcbuttonping.pressed())
-  {
-    mc.writeMessage(String(mc.PingValue()));
-  }
-
-  if (draw_square) {
-    for (int i = 0; i <= 9; i++) {
+  /*if (drawLine) {
+    for (int i = 1; i <= 5; i++) {
       mc.botGoForward();
-      delay(300);
-      mc.placeBlock(RED_TERRACOTTA);
-      delay(100);
+      mc.waitBot();
+      mc.placeBlock(BROWN_TERRACOTTA);
+      mc.waitBot();
     }
-    for (int i = 0; i <= 9; i++) {
+    for (int i = 1; i <= 5; i++) {
       mc.botGoLeft();
-      delay(300);
-      mc.placeBlock(YELLOW_TERRACOTTA);
-      delay(100);
+      mc.waitBot();
+      mc.placeBlock(BROWN_TERRACOTTA);
+      mc.waitBot();
     }
-    for (int i = 0; i <= 9; i++) {
+    for (int i = 1; i <= 5; i++) {
       mc.botGoBack();
-      delay(300);
-      mc.placeBlock(ORANGE_TERRACOTTA);
-      delay(100);
+      mc.waitBot();
+      mc.placeBlock(BROWN_TERRACOTTA);
+      mc.waitBot();
     }
-    for (int i = 0; i <= 9; i++) {
+    for (int i = 1; i <= 5; i++) {
       mc.botGoRight();
-      delay(300);
-      mc.placeBlock(PINK_TERRACOTTA);
-      delay(100);
+      mc.waitBot();
+      mc.placeBlock(BROWN_TERRACOTTA);
+      mc.waitBot();
     }
     mc.botJump();
-    draw_square = false;
-  }
+    drawLine = false;
+    }*/
 
 }
