@@ -164,6 +164,7 @@ async function Main() {
               let currentBlock = command.replace("[ARDUINO CMD] bot placeblock","");
               currentBlock = currentBlock.trim(currentBlock);
               bot.chat("/fill ~ ~ ~ ~ ~ ~ " + currentBlock);
+              device.write("[DEAMON-CMD] next");
             } else {
               if (!moving) {
                 command = command.trim(command);
@@ -227,6 +228,7 @@ async function Main() {
             bot.entity.position.x <= minRefX
           ) {
             botStop();
+            device.write("[DEAMON-CMD] next");
             return;
           }
           if (
@@ -234,10 +236,12 @@ async function Main() {
             bot.entity.position.z <= minRefZ
           ) {
             botStop();
+            device.write("[DEAMON-CMD] next");
             return;
           }
           if (bot.entity.position.y > maxRefY) {
             botStop();
+            device.write("[DEAMON-CMD] next");
             return;
           }
         }
@@ -300,7 +304,7 @@ async function Main() {
           restoreBotDataLifeStatus();
         }
       }
-      setInterval(sendMinecraftData, 10);
+      setInterval(sendMinecraftData, 100);
 
       bot.on("chat", (username, message) => {
         if (botStarted) {
