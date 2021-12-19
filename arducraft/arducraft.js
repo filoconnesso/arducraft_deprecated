@@ -20,7 +20,7 @@ console.log("#             █░░░██░░░█            #");
 console.log("#             ██████████            #");
 console.log("#                                   #");
 console.log("#  FILO CONNESSO ARDUCRAFT Daemon   #");
-console.log("#             v. 0.0.1              #");
+console.log("#          v. 1.0.0 beta1           #");
 console.log("#                                   #");
 console.log("#####################################");
 
