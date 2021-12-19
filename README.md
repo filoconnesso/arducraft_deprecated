@@ -27,7 +27,7 @@ Open new Minecraft world and share it on lan or join into your server with offli
 
 * You need the creative mode
 * Activate command blocks and cheat codes in Minecraft world configuration
-* Make your bot to operator with "/op botname"
+* Make your bot to operator with "/op botname" (server only)
 * In localhost mode you must use the LAN
 * When you're using command blocks you must set a name to them with the anvil to make the command work (say xxx)
 
