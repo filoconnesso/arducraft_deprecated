@@ -1,6 +1,11 @@
+// Check we are using GDB Debugging and include the additional code
+#ifdef VM_DEBUG_GDB
+#include <TeensyDebug.h>
+#endif
+
 #include "Arducraft.h"
 
-#define BUTTON 12
+#define BUTTON 8
 #define LED 13
 
 Minecraft mc;
@@ -12,6 +17,10 @@ MinecraftSequencer createLine3;
 
 
 void setup() {
+#ifdef VM_DEBUG_GDB
+  while (!SerialUSB1) {}    // Wait for Debugger connect
+  debug.begin(SerialUSB1);  // Start Debug Serial e.g. COM11
+#endif
   pinMode(LED, OUTPUT);
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
@@ -56,17 +65,19 @@ void loop() {
     }); //times, delay between tasks, end callback
     });*/
 
-  //static bool drawLine = false;
-  static bool leverStatus = false;
+  static bool drawLine = false;
 
-  mcbutton1.pressed([] {
+  /*
+    static bool leverStatus = false;
+
+    mcbutton1.pressed([] {
     leverStatus = !leverStatus;
     mc.lever(-49, 64, -221, leverStatus);
     //drawLine = true;
-  });
+    });
+  */
 
-
-  /*if (drawLine) {
+  if (drawLine) {
     for (int i = 1; i <= 5; i++) {
       mc.botGoForward();
       mc.waitBot();
@@ -93,6 +104,6 @@ void loop() {
     }
     mc.botJump();
     drawLine = false;
-    }*/
+  }
 
 }

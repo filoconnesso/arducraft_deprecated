@@ -16,26 +16,19 @@ class MinecraftButton
 {
   private:
     uint8_t btn;
-    bool state;
-    bool pressedValue = false;
+    uint16_t state;
   public:
     MinecraftButton(uint8_t button, uint8_t mode) {
       btn = button;
       pinMode(btn, mode);
-      state = digitalRead(btn);
     }
-    void pressed(void (*callback)());
+    bool pressed();
 };
 
-void MinecraftButton::pressed(void (*callback)()) {
-  if (digitalRead(btn) != state) {
-    if (!pressedValue) {
-      callback();
-      pressedValue = true;
-    }
-  } else {
-    pressedValue = false;
-  }
+bool MinecraftButton::pressed()
+{
+  state = (state << 1) | digitalRead(btn) | 0xfe00;
+  return (state == 0xff00);
 }
 
 struct tasks {
