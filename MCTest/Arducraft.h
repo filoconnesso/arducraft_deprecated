@@ -15,104 +15,125 @@ bool task_exists = false;
 class MinecraftButton
 {
   private:
-    uint8_t btn;
-    uint16_t state;
+    int btn;
+    int curState, prevState, debState;
+    unsigned long curMillis;
+    unsigned long prevMillis;
+    unsigned long debounceMillis = 20;
+    unsigned long curClickMillis;
+    unsigned long prevClickMillis;
+    unsigned long clickTimerOffMillis = 1;
+    unsigned long curReleaseMillis;
+    unsigned long prevReleaseMillis;
+    unsigned long releaseTimerOffMillis = 0;
+    bool pressedState = false;
+    bool toggleState = false;
+    bool pressing = false;
+    bool clicking = false;
+    bool releasing = false;
+    bool released = true;
+    int pinModeState;
   public:
-    MinecraftButton(uint8_t button, uint8_t mode) {
+    MinecraftButton(int button, int mode) {
+      if (mode == INPUT) {
+        curState = HIGH;
+        prevState = LOW;
+        debState = LOW;
+      } else {
+        curState = LOW;
+        prevState = LOW;
+        debState = HIGH;
+      }
       btn = button;
       pinMode(btn, mode);
-    }
-    bool pressed();
-};
-
-bool MinecraftButton::pressed()
-{
-  state = (state << 1) | digitalRead(btn) | 0xfe00;
-  return (state == 0xff00);
-}
-
-struct tasks {
-  uint16_t       index;
-  uint16_t       tasks_counter;
-  task_callback  callback;
-  tasks *        next_task = NULL;
-};
-
-tasks *first_task =   NULL, *last_task = NULL;
-
-class MinecraftSequencer {
-  private :
-    unsigned long curMillis = millis();
-    unsigned long prevMillis = millis();
-    unsigned long curDelay;
-    unsigned long sequencer_id = sequencers_counter++;
-    unsigned long tasks_function_position_counter = 0;
-    unsigned long tasks_counter = 0;
-    bool sequencer_enabled = false;
-    unsigned long tasks_times = 0;
-    unsigned long cur_time_step = 0;
-    task_callback endCallback;
-  public :
-    MinecraftSequencer() {
+      pinModeState = mode;
       prevMillis = millis();
     }
-    void addTask(task_callback task);
-    void run();
-    void go(unsigned long newTimes, unsigned long newDelay, task_callback newEndCallback);
+    bool press();
+    bool toggle();
+    bool click();
+    bool release();
 };
 
-void MinecraftSequencer::addTask(task_callback task) {
-  tasks *new_task = new tasks;
-  new_task->index = this->sequencer_id;
-  new_task->callback = task;
-  new_task->tasks_counter = this->tasks_counter++;
-  if (first_task == NULL) {
-    first_task = new_task;
-  } else {
-    last_task->next_task = new_task;
+bool MinecraftButton::press()
+{
+  curMillis = millis();
+  curState = digitalRead(btn);
+  if (curState != prevState) {
+    prevMillis = curMillis;
   }
-  last_task = new_task;
-  if (!task_exists) {
-    task_exists = true;
-  }
-}
-
-void MinecraftSequencer::run() {
-  if (task_exists) {
-    curMillis = millis();
-    if ((unsigned long) curMillis - prevMillis > curDelay) {
-      if (sequencer_enabled) {
-        for (tasks *this_task = first_task; this_task != NULL; this_task = this_task->next_task) {
-          if (this->sequencer_id == this_task->index) {
-            if (this_task->tasks_counter == this->tasks_function_position_counter) {
-              this_task->callback();
-            }
-          }
+  if ((unsigned long) curMillis - prevMillis > debounceMillis) {
+    if (curState != debState) {
+      debState = curState;
+      if (pinModeState == INPUT) {
+        if (debState == HIGH) {
+          pressedState = true;
+        } else {
+          pressedState = false;
         }
-        this->tasks_function_position_counter++;
-        this->cur_time_step++;
-        if (this->tasks_function_position_counter >= this->tasks_counter) {
-          this->tasks_function_position_counter = 0;
-        }
-        if (this->cur_time_step == this->tasks_times) {
-          this->tasks_function_position_counter = 0;
-          this->sequencer_enabled = false;
-          this->endCallback();
+      } else {
+        if (debState == LOW) {
+          pressedState = true;
+        } else {
+          pressedState = false;
         }
       }
-      prevMillis = curMillis;
     }
+    prevMillis = curMillis;
   }
+  prevState = curState;
+  return pressedState;
 }
 
-void MinecraftSequencer::go(unsigned long newTimes, unsigned long newDelay, task_callback newEndCallback) {
-  if (task_exists) {
-    this->sequencer_enabled = true;
-    this->cur_time_step = 0;
-    this->tasks_times = newTimes * 2;
-    this->curDelay = newDelay;
-    this->endCallback = newEndCallback;
+bool MinecraftButton::toggle()
+{
+  if (press()) {
+    if (!pressing) {
+      toggleState = !toggleState;
+      pressing = true;
+    }
+  } else {
+    pressing = false;
   }
+  return toggleState;
+}
+
+bool MinecraftButton::click()
+{
+  curClickMillis = millis();
+  if ((unsigned long) curClickMillis - prevClickMillis > clickTimerOffMillis && !released && clicking) {
+    clicking = false;
+    prevClickMillis = curClickMillis;
+  }
+  if (press()) {
+    if (released) {
+      clicking = true;
+      released = false;
+      prevClickMillis = curClickMillis;
+    }
+  } else {
+    released = true;
+  }
+  return clicking;
+}
+
+bool MinecraftButton::release()
+{
+  curReleaseMillis = millis();
+  if ((unsigned long) curReleaseMillis - prevReleaseMillis > releaseTimerOffMillis && released && !releasing) {
+    releasing = true;
+    prevReleaseMillis = curReleaseMillis;
+  }
+  if (press()) {
+    if (!released) {
+      releasing = false;
+      released = true;
+      prevReleaseMillis = curReleaseMillis;
+    }
+  } else {
+    released = false;
+  }
+  return releasing;
 }
 
 class Minecraft {
@@ -196,6 +217,7 @@ class Minecraft {
 
 void Minecraft::deamonAttach(Stream * newserial) {
   this -> serial = newserial;
+  this -> serial -> setTimeout(0);
 }
 
 String Minecraft::readMessage() {
