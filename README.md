@@ -43,5 +43,5 @@ Follow the instructions that are shown in the terminal :
 
 Enjoy!
 
-<img src="https://filoconnesso.it/arducraft/ide.png"/>
+<img src="https://filoconnesso.it/arducraft/ide.png"/> 
 
