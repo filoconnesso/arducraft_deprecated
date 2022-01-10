@@ -164,7 +164,6 @@ async function Main() {
               let currentBlock = command.replace("[ARDUINO CMD] bot placeblock","");
               currentBlock = currentBlock.trim(currentBlock);
               bot.chat("/fill ~ ~ ~ ~ ~ ~ " + currentBlock);
-              device.write("[DEAMON-CMD] next");
             } else {
               if (!moving) {
                 command = command.trim(command);
@@ -201,6 +200,8 @@ async function Main() {
           x: 0,
           y: 0,
           z: 0,
+          botMoving: false,
+          lastMessage: null
         },
       ];
 
@@ -228,7 +229,6 @@ async function Main() {
             bot.entity.position.x <= minRefX
           ) {
             botStop();
-            device.write("[DEAMON-CMD] next");
             return;
           }
           if (
@@ -236,12 +236,10 @@ async function Main() {
             bot.entity.position.z <= minRefZ
           ) {
             botStop();
-            device.write("[DEAMON-CMD] next");
             return;
           }
           if (bot.entity.position.y > maxRefY) {
             botStop();
-            device.write("[DEAMON-CMD] next");
             return;
           }
         }
@@ -290,7 +288,8 @@ async function Main() {
           minecraft_datas[0]["x"] = axis.x;
           minecraft_datas[0]["y"] = axis.y;
           minecraft_datas[0]["z"] = axis.x;
-          let minecraft_datas_string = "[DEAMON-CMD] datas ";
+          minecraft_datas[0]["botMoving"] = moving;
+          let minecraft_datas_string = "";
           minecraft_datas.forEach((datas) => {
             Object.entries(datas).forEach(([dataType, dataValue]) => {
               minecraft_datas_string += `${dataValue};`;
@@ -304,16 +303,16 @@ async function Main() {
           restoreBotDataLifeStatus();
         }
       }
+      
       setInterval(sendMinecraftData, 100);
 
       bot.on("chat", (username, message) => {
         if (botStarted) {
           if (username === bot.username) return;
-          if (!moving) {
-            console.log(`BOT CONSOLE >>> ${username} : ${message}`);
-          }
-          device.write(message + "\n");
+          minecraft_datas[0]["lastMessage"] = message;
         }
       });
+
+
     });
 }
