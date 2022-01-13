@@ -208,37 +208,37 @@ async function Init(Arguments) {
           let command = data;
           command = command.replace(/(\r\n|\n|\r)/gm, "");
           if (command.indexOf("[ARDUINO CMD] bot walk forward") > -1) {
-            maxRefZ = Math.floor(bot.entity.position.z) + 1.0;
-            maxRefX = Math.floor(bot.entity.position.x) + 1.0;
+            maxRefZ = Math.floor(bot.entity.position.z) + 1.2;
+            maxRefX = Math.floor(bot.entity.position.x) + 1.2;
             minRefZ = Math.floor(bot.entity.position.z);
             minRefX = Math.floor(bot.entity.position.x);
             bot.setControlState("forward", true);
             moving = true;
           } else if (command.indexOf("[ARDUINO CMD] bot walk back") > -1) {
-            maxRefZ = Math.floor(bot.entity.position.z) + 1.0;
-            maxRefX = Math.floor(bot.entity.position.x) + 1.0;
+            maxRefZ = Math.floor(bot.entity.position.z) + 1.2;
+            maxRefX = Math.floor(bot.entity.position.x) + 1.2;
             minRefZ = Math.floor(bot.entity.position.z);
             minRefX = Math.floor(bot.entity.position.x);
             bot.setControlState("back", true);
             moving = true;
           } else if (command.indexOf("[ARDUINO CMD] bot walk left") > -1) {
-            maxRefZ = Math.floor(bot.entity.position.z) + 1.0;
-            maxRefX = Math.floor(bot.entity.position.x) + 1.0;
+            maxRefZ = Math.floor(bot.entity.position.z) + 1.2;
+            maxRefX = Math.floor(bot.entity.position.x) + 1.2;
             minRefZ = Math.floor(bot.entity.position.z);
             minRefX = Math.floor(bot.entity.position.x);
             bot.setControlState("left", true);
             moving = true;
           }
           if (command.indexOf("[ARDUINO CMD] bot walk right") > -1) {
-            maxRefZ = Math.floor(bot.entity.position.z) + 1.0;
-            maxRefX = Math.floor(bot.entity.position.x) + 1.0;
+            maxRefZ = Math.floor(bot.entity.position.z) + 1.2;
+            maxRefX = Math.floor(bot.entity.position.x) + 1.2;
             minRefZ = Math.floor(bot.entity.position.z);
             minRefX = Math.floor(bot.entity.position.x);
             bot.setControlState("right", true);
             moving = true;
           }
           if (command.indexOf("[ARDUINO CMD] bot jump") > -1) {
-            maxRefY = Math.floor(bot.entity.position.y) + 1.0;
+            maxRefY = Math.floor(bot.entity.position.y) + 1.2;
             minRefY = Math.floor(bot.entity.position.y);
             bot.setControlState("jump", true);
             moving = true;
@@ -246,12 +246,13 @@ async function Init(Arguments) {
           if (command.indexOf("[ARDUINO CMD] bot walk stop") > -1) {
             botStop();
           } else if (command.indexOf("[ARDUINO CMD] bot placeblock") > -1) {
-            let currentBlock = command.replace(
-              "[ARDUINO CMD] bot placeblock",
-              ""
-            );
+            let currentBlock = command.replace("[ARDUINO CMD] bot placeblock","");
             currentBlock = currentBlock.trim(currentBlock);
             bot.chat("/fill ~ ~ ~ ~ ~ ~ " + currentBlock);
+          } else if(command.indexOf("[ARDUINO CMD] chatlink=") > -1) {
+            let currentChatLink = command.replace("[ARDUINO CMD] chatlink=","");
+            let linkParams = currentChatLink.split('+');
+            bot.chat(`/tellraw @a {\"text\":\"${linkParams[0]}\",\"color\":\"${linkParams[1]}\",\"bold\":\"true\",\"underlined\":\"true",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"${linkParams[2]}\"}}`);
           } else {
             if (!moving) {
               command = command.trim(command);
@@ -339,6 +340,8 @@ async function Init(Arguments) {
       botStarted = true;
       MinecraftGameInformation = require("minecraft-data")(bot.version);
       bot.lookAt(bot.entity.position.offset(0, bot.entity.height, 0));
+      bot.chat("Welcome to ArduCraft, for updates check us on Github at Filo Connesso!");
+      bot.chat("/tellraw @a {\"text\":\">>> Click for Github Repository <<<\",\"color\":\"red\",\"bold\":\"true\",\"underlined\":\"true\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://github.com/filoconnesso/arducraft\"}}");
     });
     bot.on("kicked", function () {
       console.log("BOT CONSOLE >>> The bot got kicked");

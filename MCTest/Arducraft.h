@@ -39,10 +39,6 @@
 
 #define VERSION "1.0.0"
 
-typedef void (*task_callback)();
-unsigned long sequencers_counter = 0UL;
-bool task_exists = false;
-
 // Compilation informations
 const char file_name[] = __FILE__;
 const char compile_date[] = __DATE__;
@@ -248,14 +244,19 @@ public:
   void waitBot();
   void lever(long x, long y, long z, bool powered);
   void debugInformations();
+  void createChatLink(String text, String color, String url);
 };
 
+void Minecraft::createChatLink(String text, String color, String url) {
+  this->serial->print(Arduino_Cmd + "chatlink=" + String(text) + "+" + String(color) + "+" + String(url)  + "\n");
+}
+
 void Minecraft::debugInformations() {
-  Serial.println(String("Thank you for using Arducraft! " + String(VERSION) +
-                        "\n\nInformations:\n") +
-                 "File Name: " + String(file_name) +
-                 "\nCompilation Date: " + String(compile_date) +
-                 "\nCompilation Time: " + String(compile_time));
+  this->serial->print(String("Thank you for using Arducraft! " + String(VERSION) +
+                             "\n\nInformations:\n") +
+                             "File Name: " + String(file_name) +
+                             "\nCompilation Date: " + String(compile_date) +
+                             "\nCompilation Time: " + String(compile_time));
 }
 
 void Minecraft::deamonAttach(Stream *newserial) {

@@ -67,27 +67,28 @@ void loop() {
   }
 
   if (mcbutton1.click()) {
+    mc.createChatLink("visita google", "yellow", "https://www.google.com");
     drawLine = true;
   }
 
   if (drawLine) {
     for (int i = 1; i <= 5; i++) {
-      mc.botGoForward();
+      mc.botGoLeft();
       mc.waitBot();
       mc.placeBlock(RED_TERRACOTTA);
     }
     for (int i = 1; i <= 5; i++) {
-      mc.botGoLeft();
+      mc.botGoForward();
       mc.waitBot();
       mc.placeBlock(BROWN_TERRACOTTA);
     }
     for (int i = 1; i <= 5; i++) {
-      mc.botGoBack();
+      mc.botGoRight();
       mc.waitBot();
       mc.placeBlock(YELLOW_TERRACOTTA);
     }
     for (int i = 1; i <= 5; i++) {
-      mc.botGoRight();
+      mc.botGoBack();
       mc.waitBot();
       mc.placeBlock(GREEN_TERRACOTTA);
     }
