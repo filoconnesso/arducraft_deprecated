@@ -82,6 +82,10 @@ async function Init(Arguments) {
     bot_name: "",
   };
 
+  if(fs.existsSync("./config.json") && Arguments[0] == "--clean") {
+    fs.unlinkSync("./config.json");
+  }
+
   if (fs.existsSync("./config.json") && Arguments.length == 0) {
     console.log("Loading config.json...");
     data = JSON.parse(fs.readFileSync("./config.json"));
@@ -97,6 +101,7 @@ async function Init(Arguments) {
   }
 
   if (Arguments.length >= 4) {
+
     configData.serial_port = Arguments[0];
     configData.hostname = Arguments[1];
     configData.port = Arguments[2];
@@ -116,6 +121,7 @@ async function Init(Arguments) {
       arguments[0][3],
       arguments[0][4]
     );
+    
   } else if (!fs.existsSync("./config.json")) {
     inquirer
       .prompt([
