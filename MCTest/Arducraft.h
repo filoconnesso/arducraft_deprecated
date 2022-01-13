@@ -36,6 +36,7 @@
 #include "definitions/entities.h"
 #include "definitions/game_modes.h"
 #include "definitions/weather.h"
+#include "definitions/colors.h"
 
 #define VERSION "1.0.0"
 

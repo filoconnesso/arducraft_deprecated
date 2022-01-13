@@ -41,7 +41,8 @@ void setup() {
   pinMode(LED_RAINING, OUTPUT);
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
-  mc.debugInformations();
+  //mc.debugInformations();
+  //mc.createChatLink("<<< VISIT FILOCONNESSO.IT >>>", GOLD, "https://www.filoconnesso.it");
 }
 
 void loop() {
@@ -67,7 +68,6 @@ void loop() {
   }
 
   if (mcbutton1.click()) {
-    mc.createChatLink("visita google", "yellow", "https://www.google.com");
     drawLine = true;
   }
 
