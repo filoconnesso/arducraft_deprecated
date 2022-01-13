@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
- //----------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 /*
  * FILO CONNESSO MINECRAFT LIBRARY
@@ -41,6 +41,7 @@ void setup() {
   pinMode(LED_RAINING, OUTPUT);
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
+  //mc.debugInformations();
 }
 
 void loop() {
@@ -59,7 +60,7 @@ void loop() {
 
   static bool drawLine = false;
 
-  if(mc.isRaining()) {
+  if (mc.isRaining()) {
     digitalWrite(LED_RAINING, HIGH);
   } else {
     digitalWrite(LED_RAINING, LOW);
@@ -93,5 +94,4 @@ void loop() {
     mc.botJump();
     drawLine = false;
   }
-
 }
