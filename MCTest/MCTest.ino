@@ -41,7 +41,7 @@ void setup() {
   pinMode(LED_RAINING, OUTPUT);
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
-  //mc.debugInformations();
+  mc.debugInformations();
 }
 
 void loop() {

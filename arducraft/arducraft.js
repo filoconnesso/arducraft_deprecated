@@ -205,9 +205,6 @@ async function Init(Arguments) {
     const ReadSerialPort = async () => {
       parser.on("data", (data) => {
         if (botStarted) {
-          bot.chat(
-            "Welcome to ArduCraft, for updates check us on Github at Filo Connesso!"
-          );
           let command = data;
           command = command.replace(/(\r\n|\n|\r)/gm, "");
           if (command.indexOf("[ARDUINO CMD] bot walk forward") > -1) {
