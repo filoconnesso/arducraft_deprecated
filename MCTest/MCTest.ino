@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
- //----------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 /*
  * FILO CONNESSO MINECRAFT LIBRARY
@@ -41,6 +41,8 @@ void setup() {
   pinMode(LED_RAINING, OUTPUT);
   Serial.begin(115200);
   mc.deamonAttach(&Serial);
+  //mc.debugInformations();
+  //mc.createChatLink("<<< VISIT FILOCONNESSO.IT >>>", GOLD, "https://www.filoconnesso.it");
 }
 
 void loop() {
@@ -59,7 +61,7 @@ void loop() {
 
   static bool drawLine = false;
 
-  if(mc.isRaining()) {
+  if (mc.isRaining()) {
     digitalWrite(LED_RAINING, HIGH);
   } else {
     digitalWrite(LED_RAINING, LOW);
@@ -71,27 +73,26 @@ void loop() {
 
   if (drawLine) {
     for (int i = 1; i <= 5; i++) {
-      mc.botGoForward();
+      mc.botGoLeft();
       mc.waitBot();
       mc.placeBlock(RED_TERRACOTTA);
     }
     for (int i = 1; i <= 5; i++) {
-      mc.botGoLeft();
+      mc.botGoForward();
       mc.waitBot();
       mc.placeBlock(BROWN_TERRACOTTA);
     }
     for (int i = 1; i <= 5; i++) {
-      mc.botGoBack();
+      mc.botGoRight();
       mc.waitBot();
       mc.placeBlock(YELLOW_TERRACOTTA);
     }
     for (int i = 1; i <= 5; i++) {
-      mc.botGoRight();
+      mc.botGoBack();
       mc.waitBot();
       mc.placeBlock(GREEN_TERRACOTTA);
     }
     mc.botJump();
     drawLine = false;
   }
-
 }
