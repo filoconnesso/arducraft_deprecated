@@ -1,6 +1,6 @@
 {
   "name": "arducraft",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "arducraft.js",
   "scripts": {
     "start": "node arducraft.js",
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "inquirer": "^8.2.0",
-    "mineflayer": "^3.11.2",
+    "mineflayer": "^4.1.0",
     "serialport": "^9.2.4"
   },
   "description": ""
