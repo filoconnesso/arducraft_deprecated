@@ -1,0 +1,18 @@
+{
+  "name": "arducraft",
+  "version": "1.0.1",
+  "main": "arducraft.js",
+  "scripts": {
+    "start": "node arducraft.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^8.2.0",
+    "mineflayer": "^4.1.0",
+    "serialport": "^9.2.4"
+  },
+  "description": ""
+}
