@@ -381,5 +381,5 @@ function startBot(serial_port, hostname, port, version, bot_name) {
 
   setInterval(minecraftHandle, 100);
 
-  
+
 }
