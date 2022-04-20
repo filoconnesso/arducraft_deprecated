@@ -14,6 +14,7 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "electro": "^2.1.1",
+    "rxjs": "^7.5.5",
     "electron": "^18.0.4"
   },
   "dependencies": {
