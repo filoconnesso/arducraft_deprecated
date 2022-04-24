@@ -1,11 +1,7 @@
-const mineflayer = require("mineflayer");
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require("electron");
-const { SerialPort } = require("serialport");
-const { ReadlineParser } = require("@serialport/parser-readline");
-const path = require("path");
-const Vec3 = require("vec3").Vec3;
-const Rx = require("rxjs");
 const fs = require("fs");
+const path = require("path");
+const { SerialPort } = require("serialport");
 
 const IPC_CHANNEL = "ipc";
 
@@ -18,10 +14,8 @@ function createWindow() {
     autoHideMenuBar: true,
     icon: __dirname + "/assets/images/icon.png",
     webPreferences: {
-      nodeIntegration: true,
-      nativeWindowOpen: true,
-      contextIsolation: false,
-    },
+      preload: path.join(__dirname, 'preload.js'),
+    }
   });
   mainWindow.loadFile("main.html");
   mainWindow.setResizable(false);
@@ -42,25 +36,14 @@ ipcMain.on(IPC_CHANNEL, (event, data) => {
   if (dataSettingsSplitted[0] == "LOAD_CONFIG") {
     if (fs.existsSync("./config.json")) {
       let data = JSON.parse(fs.readFileSync("./config.json"));
-      event.reply(
-        IPC_CHANNEL,
-        "CONFIG," +
-          data.hostname +
-          "," +
-          data.port +
-          "," +
-          data.version +
-          "," +
-          data.bot_name
+      event.reply(IPC_CHANNEL, "CONFIG," + data.hostname + "," + data.port + "," + data.version + "," + data.bot_name
       );
     }
   }
   if (dataSettingsSplitted[0] == "UPDATE_SERIAL_PORT_LIST") {
     SerialPort.list().then(function (ports) {
       ports.forEach(function (port) {
-        event.reply(
-          IPC_CHANNEL,
-          "ADD_PORT," + port.path + "," + port.manufacturer
+        event.reply(IPC_CHANNEL, "ADD_PORT," + port.path + "," + port.manufacturer
         );
       });
     });
@@ -111,6 +94,13 @@ app.on("window-all-closed", function () {
 });
 
 function startBot(serial_port, hostname, port, version, bot_name) {
+
+  const mineflayer = require("mineflayer");
+  const { SerialPort } = require("serialport");
+  const { ReadlineParser } = require("@serialport/parser-readline");
+  const Vec3 = require("vec3").Vec3;
+  const Rx = require("rxjs");
+
   endConnection = false;
 
   const device = new SerialPort({
@@ -209,7 +199,6 @@ function startBot(serial_port, hostname, port, version, bot_name) {
     bot.chat(
       '/tellraw @a {"text":">>> Click for Github Repository <<<","color":"red","bold":"true","underlined":"true","clickEvent":{"action":"open_url","value":"https://github.com/filoconnesso/arducraft"}}'
     );
-    ReadSerialPort();
   });
 
   bot.on("kicked", function () {
@@ -259,37 +248,37 @@ function startBot(serial_port, hostname, port, version, bot_name) {
 
   function minecraftHandle() {
     if (device.isOpen) {
-        if (botStarted) {
-          let axis = bot.entity.position;
-          minecraft_datas[0]["worldTime"] = bot.time.timeOfDay;
-          minecraft_datas[0]["botExperience"] = bot.experience.points;
-          minecraft_datas[0]["botHealth"] = bot.health;
-          minecraft_datas[0]["botFood"] = bot.food;
-          minecraft_datas[0]["botOxygen"] = bot.oxygenLevel;
-          minecraft_datas[0]["botGameMode"] = bot.game.gameMode;
-          minecraft_datas[0]["raining"] = bot.isRaining;
-          minecraft_datas[0]["ping"] = bot.player.ping;
-          minecraft_datas[0]["x"] = axis.x;
-          minecraft_datas[0]["y"] = axis.y;
-          minecraft_datas[0]["z"] = axis.x;
-          minecraft_datas[0]["botMoving"] = moving;
-          let minecraft_datas_string = "";
-          minecraft_datas.forEach((datas) => {
-            Object.entries(datas).forEach(([dataType, dataValue]) => {
-              minecraft_datas_string += `${dataValue};`;
-            });
+      if (botStarted) {
+        let axis = bot.entity.position;
+        minecraft_datas[0]["worldTime"] = bot.time.timeOfDay;
+        minecraft_datas[0]["botExperience"] = bot.experience.points;
+        minecraft_datas[0]["botHealth"] = bot.health;
+        minecraft_datas[0]["botFood"] = bot.food;
+        minecraft_datas[0]["botOxygen"] = bot.oxygenLevel;
+        minecraft_datas[0]["botGameMode"] = bot.game.gameMode;
+        minecraft_datas[0]["raining"] = bot.isRaining;
+        minecraft_datas[0]["ping"] = bot.player.ping;
+        minecraft_datas[0]["x"] = axis.x;
+        minecraft_datas[0]["y"] = axis.y;
+        minecraft_datas[0]["z"] = axis.x;
+        minecraft_datas[0]["botMoving"] = moving;
+        let minecraft_datas_string = "";
+        minecraft_datas.forEach((datas) => {
+          Object.entries(datas).forEach(([dataType, dataValue]) => {
+            minecraft_datas_string += `${dataValue};`;
           });
-          minecraft_datas_string += "endata";
-          device.write(minecraft_datas_string + "\n", function (err, result) {
-            if (err) {
-              //
-            }
-          });
-          if (minecraft_datas[0]["kicked"] || minecraft_datas[0]["error"]) {
-            botStarted = false;
+        });
+        minecraft_datas_string += "endata";
+        device.write(minecraft_datas_string + "\n", function (err, result) {
+          if (err) {
+            //
           }
-          restoreBotDataLifeStatus();
+        });
+        if (minecraft_datas[0]["kicked"] || minecraft_datas[0]["error"]) {
+          botStarted = false;
         }
+        restoreBotDataLifeStatus();
+      }
       if (endConnection) {
         bot.end();
         device.unpipe(parser);
@@ -381,5 +370,6 @@ function startBot(serial_port, hostname, port, version, bot_name) {
 
   setInterval(minecraftHandle, 100);
 
+  ReadSerialPort();
 
 }

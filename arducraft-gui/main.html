@@ -13,19 +13,20 @@
 <body>
   <div class="logo"></div>
   <div class="window" id="portlistwindow">
-     <div class="window-title">SELECT SERIAL PORT :</div>
-     <div class="list" id="portlist"></div>
+    <div class="window-title">SELECT SERIAL PORT :</div>
+    <div class="list" id="portlist"></div>
   </div>
   <div class="window" id="connectedwindow">
     <div class="sub-content">
       <div id="connectionmsg">RUN ARDUCRAFT...</div>
-      <button class="mini-button" id="disconnect">CLOSE</button>
+      <button class="mini-button" id="disconnectbtn">CLOSE</button>
     </div>
   </div>
   <div class="container">
-    <input class="inputtext" type="text" id="comport" spellcheck="false" placeholder="SELECT SERIAL PORT..." readonly></input>
+    <input class="inputtext" type="text" id="comport" spellcheck="false" placeholder="SELECT SERIAL PORT..."
+      readonly></input>
     <br />
-    <input class="inputtext" type="text" id="server" spellcheck="false" placeholder="SERVER"></input>
+    <input class="inputtext" type="text" id="serveraddress" spellcheck="false" placeholder="SERVER"></input>
     <br />
     <input class="inputtext" type="text" id="serverport" spellcheck="false" placeholder="SERVER PORT"></input>
     <br />
@@ -35,8 +36,8 @@
     <br /><br />
     <button class="button" id="connect">CONNECT</button>
   </div>
-  <div class="footer">Filo Connesso &copy; 2022 - v.1.0.0</div>
-  <script src="functions.js"></script>
+  <div class="footer">Filo Connesso &copy; 2022 - v.1.0.1</div>
+  <script src="./functions.js"></script>
 </body>
 
 </html>
