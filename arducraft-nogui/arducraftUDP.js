@@ -121,19 +121,19 @@ async function Init(Arguments) {
       arguments[0][5]
     );
   } else if (!fs.existsSync("./config.json")) {
-    inquirer
+    await inquirer
       .prompt([
         {
           name: "ip_address",
           type: "input",
           message: "Indicate the ip address:",
-          choices: "localhost",
+          default: "localhost",
         },
         {
           name: "board_port",
           type: "input",
           message: "Indicate the board port:",
-          choices: 6000,
+          default: 6000,
         },
         {
           name: "hostname",
