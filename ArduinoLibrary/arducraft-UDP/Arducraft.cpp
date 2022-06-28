@@ -284,6 +284,19 @@ double Arducraft::getBotPositionY() { return botPositionY; }
 
 double Arducraft::getBotPositionZ() { return botPositionZ; }
 
+// parse a String to find if the text is inside of the desired string
+bool Arducraft::findString(String text, String find)
+{
+  return text.indexOf(find) > -1;
+}
+
+// get real date and time from pc
+String Arducraft::getServerRealDateAndTime()
+{
+  return date;
+}
+
+
 // run function that monitors the state of the game and allows control from the
 // microcontroller during the game session the library variables are updated via
 // serial the game data is sent by the tool through a string containing all the
@@ -297,7 +310,6 @@ void Arducraft::run() {
 
   if(incoming_data != EMPTY_STRING)
   {
-
     lastBotDatas = incoming_data;
     // update spawn string
     spawnValue = splitString(lastBotDatas, ';', 0);
@@ -380,11 +392,8 @@ void Arducraft::run() {
     // update last message string
     lastMessage = splitString(lastBotDatas, ';', 19);
 
-  }
-  if(!sent)
-  {
-    writeMessage("Board Connected");
-    sent = true;
-  }
+    // update date string
+    date = splitString(lastBotDatas, ';', 20);
 
+  }
 }

@@ -44,6 +44,7 @@ let bot;
 let moving = false;
 let MinecraftGameInformation;
 let board_port_addr, board_ip;
+
 console.log("#####################################");
 console.log("#                                   #");
 console.log("#             ██████████            #");
@@ -414,7 +415,9 @@ async function Init(Arguments) {
           minecraft_datas_string += `${dataValue};`;
         });
       });
+      minecraft_datas_string += (new Date()).toUTCString() + ";";
       minecraft_datas_string += "endata";
+
       server.send(minecraft_datas_string, 0, minecraft_datas_string.length, board_port_addr, board_ip, function(err, bytes) {});
 
       if (minecraft_datas[0]["kicked"] || minecraft_datas[0]["error"]) {

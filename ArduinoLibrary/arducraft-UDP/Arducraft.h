@@ -53,9 +53,6 @@ const char compile_time[] = __TIME__;
 
 class Arducraft {
 private:
-  //first message
-  bool sent = false;
-  // strings for status
   // spawn
   String spawnValue;
   // kick
@@ -200,6 +197,13 @@ public:
   void debugInformations();
   // create a link to show in the game chat
   void createChatLink(String text, String color, String url);
+  // parse a String to find if the text is inside of the desired string
+  bool findString(String text, String find);
+  // variables that stores date
+  String date;
+  // getter for date
+  String getServerRealDateAndTime();
+
 };
 
 #endif

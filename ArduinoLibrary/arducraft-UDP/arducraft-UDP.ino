@@ -67,7 +67,9 @@ void loop() {
 
   if(PSW_1.press())
   {
-    mc.writeMessage("button pressed");
+    String time = mc.getServerRealDateAndTime();
+    if(time != "")
+      mc.writeMessage("The current date and time is: " + time);
   }
 
 
