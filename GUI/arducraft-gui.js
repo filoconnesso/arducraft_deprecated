@@ -189,9 +189,9 @@ function startBot(serial_port, hostname, port, version, bot_name) {
   });
 
   bot.on("spawn", function () {
+    botStarted = true;
     console.log("BOT CONSOLE >>> The bot appeared on the map");
     minecraft_datas[0]["spawn"] = true;
-    botStarted = true;
     bot.lookAt(bot.entity.position.offset(0, bot.entity.height, 0));
     bot.chat(
       "Welcome to ArduCraft, for updates check us on Github at Filo Connesso!"

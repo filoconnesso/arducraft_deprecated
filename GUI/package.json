@@ -1,6 +1,6 @@
 {
   "name": "arducraft-gui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Arducraft",
   "main": "arducraft-gui.js",
   "scripts": {
@@ -20,12 +20,12 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "electro": "^2.1.1",
-    "electron": "^18.1.0",
-    "electron-packager": "^15.5.1"
+    "electron": "^21.1.1",
+    "electron-packager": "^16.0.0"
   },
   "dependencies": {
     "minecraft-protocol": "^1.34.0",
-    "mineflayer": "^4.3.0",
+    "mineflayer": "^4.5.0",
     "rxjs": "^7.5.5",
     "serialport": "^10.4.0"
   }
