@@ -39,7 +39,7 @@ body {
     width: 405px;
     text-decoration: none;
     text-align: center;
-    color: white;
+    color: black;
     background: url(../images/button_standard.png) no-repeat;
     font-family: minecraft;
     line-height: 26px;
@@ -47,8 +47,8 @@ body {
 }
 
 .button:hover {
-    background: url(../images/button_hover.png) no-repeat;
-    color: yellow;
+    color: white;
+    border: solid 3px;
 }
 
 
@@ -57,7 +57,7 @@ body {
     width: 320px;
     text-decoration: none;
     text-align: center;
-    color: white;
+    color: black;
     background: url(../images/button_standard.png) no-repeat;
     font-family: minecraft;
     line-height: 26px;
@@ -65,8 +65,8 @@ body {
 }
 
 .medium-button:hover {
-    background: url(../images/button_hover.png) no-repeat;
-    color: yellow;
+    color: white;
+    border: solid 3px;
 }
 
 .mini-button {
