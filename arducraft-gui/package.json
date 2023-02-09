@@ -20,7 +20,7 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "electro": "^2.1.1",
-    "electron": "^18.0.4",
+    "electron": "^18.3.7",
     "electron-packager": "^15.5.1"
   },
   "dependencies": {
