@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "inquirer": "^8.2.5",
-    "mineflayer": "^4.7.0",
+    "mineflayer": "^4.8.0",
     "serialport": "^9.2.4"
   },
   "description": ""
