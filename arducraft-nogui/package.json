@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "inquirer": "^8.2.5",
+    "inquirer": "^8.2.6",
     "mineflayer": "^4.10.1",
     "serialport": "^9.2.4"
   },
