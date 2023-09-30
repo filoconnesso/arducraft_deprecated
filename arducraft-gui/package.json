@@ -5,12 +5,12 @@
   "main": "arducraft-gui.js",
   "scripts": {
     "start-gui": "electron arducraft-gui",
-    "package-win-x64" : "electron-packager ./ ArduCraft-Gui --platform=win32 --arch=x64 --asar --out=build --overwrite",
-    "package-win-x86" : "electron-packager ./ ArduCraft-Gui --platform=win32 --arch=ia32 --asar --out=build --overwrite",
-    "package-linux-x64" : "electron-packager ./ ArduCraft-Gui --platform=linux --arch=x64 --asar --out=build --overwrite",
-    "package-linux-x86" : "electron-packager ./ ArduCraft-Gui --platform=linux --arch=ia32 --asar --out=build --overwrite",
-    "package-macOS-x64" : "electron-packager ./ ArduCraft-Gui --platform=darwin --arch=x64 --asar --out=build --overwrite",
-    "package-all" : "npm run package-win-x64 & npm run package-win-x86 & npm run package-linux-x64 & npm run package-linux-x86 & npm run package-macOS-x64"
+    "package-win-x64": "electron-packager ./ ArduCraft-Gui --platform=win32 --arch=x64 --asar --out=build --overwrite",
+    "package-win-x86": "electron-packager ./ ArduCraft-Gui --platform=win32 --arch=ia32 --asar --out=build --overwrite",
+    "package-linux-x64": "electron-packager ./ ArduCraft-Gui --platform=linux --arch=x64 --asar --out=build --overwrite",
+    "package-linux-x86": "electron-packager ./ ArduCraft-Gui --platform=linux --arch=ia32 --asar --out=build --overwrite",
+    "package-macOS-x64": "electron-packager ./ ArduCraft-Gui --platform=darwin --arch=x64 --asar --out=build --overwrite",
+    "package-all": "npm run package-win-x64 & npm run package-win-x86 & npm run package-linux-x64 & npm run package-linux-x86 & npm run package-macOS-x64"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,8 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "electro": "^2.1.1",
-    "electron": "^22.3.21",
-    "electron-packager": "^15.5.1"
+    "electron": "^22.3.25",
+    "electron-packager": "^15.5.2"
   },
   "dependencies": {
     "mineflayer": "^4.14.0",
